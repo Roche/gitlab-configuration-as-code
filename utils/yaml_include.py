@@ -1,5 +1,7 @@
 # -*- coding: utf-8 -*-
 
+# It is based on https://github.com/tanbro/pyyaml-include, but contains added handling of non yaml file types as strings
+
 """
 Include YAML files within YAML
 """
