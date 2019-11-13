@@ -1,0 +1,14 @@
+# Reference: https://docs.gitlab.com/12.4/ee/api/settings.html
+settings:
+  asset_proxy:
+    enabled: False
+  external_authorization_service:
+    enabled: True
+    default_label: 'some label'
+    timeout: 55
+    url: 'https://some.external.auth.service.url'
+  recaptcha_enabled: yes
+  terms: '# Terms of Service\n\n *GitLab rocks*!!'
+  plantuml:
+    enabled: True
+    url: 'http://plantuml.url'
