@@ -1,14 +1,14 @@
-import logging
+import utils.logger as logger
 
-from .base import Configurer
+from .base import Configurer, Mode
 
-logger = logging.getLogger('configurer.applicationsettings')
+logger = logger.get_logger('configurer.applicationsettings')
+
 
 class SettingsConfigurer(Configurer):
 
-    def __init__(self, gitlab, settings):
-        super().__init__(gitlab, settings)
-        pass
+    def __init__(self, gitlab, settings, mode):
+        super().__init__(gitlab, settings, mode=mode)
 
     def configure(self):
         logger.info('Configuring Application Settings')
@@ -17,7 +17,10 @@ class SettingsConfigurer(Configurer):
         logger.info('Found %s changed values', changes)
         if changes != 0:
             logger.info('Applying changes...')
-            settings.save()
+            if self.mode == Mode.TEST:
+                logger.info('No changes will be applied due to test mode enabled')
+            else:
+                settings.save()
         else:
             logger.info('Nothing to do')
         return settings
@@ -39,7 +42,7 @@ class SettingsConfigurer(Configurer):
                 current_value = getattr(current, prefixed_key)
                 if current_value != value:
                     changes += 1
-                    self._log(prefixed_key, current_value, value)
+                    logger.log_update(prefixed_key, current_value, value)
                     setattr(current, prefixed_key, value)
             else:
                 logger.warning('Found invalid configuration option: %s', prefixed_key)

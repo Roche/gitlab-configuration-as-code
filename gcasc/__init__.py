@@ -4,10 +4,10 @@ import gitlab
 import requests
 
 import utils.os as uos
+import utils.logger as logging
 
 from .settings import *
 from .config import *
-
 
 GITLAB_CLIENT_CONFIG_FILE = ['GITLAB_CLIENT_CONFIG', 'GITLAB_CLIENT_CONFIG_FILE']
 GITLAB_CLIENT_CERTIFICATE = ['GITLAB_CLIENT_CERT', 'GITLAB_CLIENT_CERTIFICATE']
@@ -21,16 +21,22 @@ GITLAB_CONFIG_FILE = ['GITLAB_CONFIG_FILE', 'GITLAB_CONFIG_PATH']
 GITLAB_CONFIG_FILE_DEFAULT_PATHS = ['/etc/python-gitlab.cfg', '/etc/gitlab.cfg', '~/.python-gitlab.cfg',
                                     '~/.gitlab.cfg']
 
-logging.basicConfig(format='[%(levelname)s] [%(name)s] %(message)s', level=logging.DEBUG)
+GITLAB_MODE = 'GITLAB_MODE'
+
+logger = logging.get_logger()
+
 
 class GitlabConfigurationAsCode(object):
 
     def __init__(self):
+        mode = Mode[uos.get_env_or_else(GITLAB_MODE, Mode.TEST.name)]
+        if mode == Mode.TEST:
+            logger.info("TEST MODE ENABLED. NO CHANGES WILL BE APPLIED")
+        path = uos.get_env_or_else(GITLAB_CONFIG_FILE, 'gitlab.yml')
         self.gitlab = init_gitlab_client()
         self.configurers = {}
-        path = uos.get_env_or_else(GITLAB_CONFIG_FILE, "gitlab.yml")
         self.config = GitlabConfiguration.from_file(path)
-        self.configurers['settings'] = SettingsConfigurer(self.gitlab, self.config.settings)
+        self.configurers['settings'] = SettingsConfigurer(self.gitlab, self.config.settings, mode)
 
     @property
     def settings(self):
@@ -46,11 +52,11 @@ def init_gitlab_from_env():
     token = uos.get_env_or_else(GITLAB_CLIENT_TOKEN)
     if token is None:
         raise ClientInitializationError(
-            "GitLab token was not provided. It must be defined in {0} environment variable".format(GITLAB_CLIENT_TOKEN))
+            'GitLab token was not provided. It must be defined in {0} environment variable'.format(GITLAB_CLIENT_TOKEN))
 
-    url = uos.get_env_or_else(GITLAB_CLIENT_URL, "https://gitlab.com")
+    url = uos.get_env_or_else(GITLAB_CLIENT_URL, 'https://gitlab.com')
     ssl_verify = uos.get_env_or_else(GITLAB_CLIENT_SSL_VERIFY, True)
-    api_version = uos.get_env_or_else(GITLAB_CLIENT_API_VERSION, "4")
+    api_version = uos.get_env_or_else(GITLAB_CLIENT_API_VERSION, '4')
 
     return gitlab.Gitlab(url=url, private_token=token, ssl_verify=ssl_verify, api_version=api_version)
 
@@ -58,21 +64,21 @@ def init_gitlab_from_env():
 def init_gitlab_from_config_file():
     config_path = __find_gitlab_connection_config_file()
     if config_path is None:
-        raise ClientInitializationError("")
-    return gitlab.Gitlab.from_config("global", [config_path])
+        raise ClientInitializationError('')
+    return gitlab.Gitlab.from_config('global', [config_path])
 
 
 def init_gitlab_client():
-    print("Initializing GitLab client")
+    logger.info('Initializing GitLab client')
     try:
-        print("Trying to initialize GitLab client from configuration file...")
+        logger.info('Trying to initialize GitLab client from configuration file...')
         client = init_gitlab_from_config_file()
     except ClientInitializationError:
-        print("Trying to initialize GitLab client from environment variables...")
+        logger.info('Trying to initialize GitLab client from environment variables...')
         client = init_gitlab_from_env()
     if client is None:
-        raise ClientInitializationError("Unable to initialize GitLab client due to missing configuration either in "
-                                        "config file or environment vars")
+        raise ClientInitializationError('Unable to initialize GitLab client due to missing configuration either in '
+                                        'config file or environment vars')
 
     __init_session(client)
     return client
@@ -82,16 +88,17 @@ def __find_gitlab_connection_config_file():
     config_path = uos.get_env_or_else(GITLAB_CLIENT_CONFIG_FILE)
     if config_path is not None:
         try:
-            __check_file_exists(config_path, "GitLab Client")
+            __check_file_exists(config_path, 'GitLab Client')
         except FileNotFoundError:
             raise ClientInitializationError(
-                "Configuration file was not found under path {0}, which was defined in {1} env variable."
-                "Provide path to existing file or remove this variable and configure client"
-                "using environment variables instead of configuration file".format(config_path))
+                'Configuration file was not found under path {0}, which was defined in {1} env variable.'
+                'Provide path to existing file or remove this variable and configure client'
+                'using environment variables instead of configuration file'.format(config_path,
+                                                                                   GITLAB_CLIENT_CONFIG_FILE))
     else:
         for path in GITLAB_CONFIG_FILE_DEFAULT_PATHS:
             try:
-                __check_file_exists(path, "GitLab Client")
+                __check_file_exists(path, 'GitLab Client')
                 config_path = path
                 break
             except FileNotFoundError:
@@ -99,15 +106,15 @@ def __find_gitlab_connection_config_file():
     return config_path
 
 
-def __check_file_exists(path, file_context=""):
+def __check_file_exists(path, file_context=''):
     config = Path(path)
     if not config.exists():
         raise FileNotFoundError(
-            "[{0}] File under '" + path + "' does not exist. Provide valid path.".format(file_context))
+            '[{0}] File under '' + path + '' does not exist. Provide valid path.'.format(file_context))
 
     if config.is_dir():
         raise FileNotFoundError(
-            "[{0}] Directory was found under '" + path + "' instead of file. Provide valid path to file.".format(
+            '[{0}] Directory was found under '' + path + '' instead of file. Provide valid path to file.'.format(
                 file_context))
 
 
@@ -121,8 +128,8 @@ def __init_session(gitlab):
     elif certificate is not None and key is None:
         pass
     else:
-        __check_file_exists(certificate, "Client Certificate")
-        __check_file_exists(key, "Client Key")
+        __check_file_exists(certificate, 'Client Certificate')
+        __check_file_exists(key, 'Client Key')
         session = requests.Session()
         session.cert = (certificate, key)
         gitlab.session = session

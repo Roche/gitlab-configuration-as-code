@@ -1,14 +1,18 @@
 from abc import ABC
+from enum import Enum
+
+
+class Mode(Enum):
+    TEST = -1
+    APPLY = 0
 
 
 class Configurer(ABC):
-    def __init__(self, gitlab, config):
+    def __init__(self, gitlab, config, mode=Mode.APPLY):
         self.gitlab = gitlab
         self.config = config
+        self.mode = mode
         self._validate()
-
-    def _log(self, field, old_val, new_val):
-        print("Change value of {0} from {1} to {2}".format(field, old_val, new_val))
 
     def configure(self):
         pass
