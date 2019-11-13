@@ -28,7 +28,7 @@ class YamlEnvConstructor:
     def load(env):
         value = os.getenv(env)
         if value is None:
-            raise RuntimeError('Expected %s environment variable, but value was not found in environment'.format(env))
+            raise RuntimeError('Expected {0} environment variable, but value was not found in environment'.format(env))
         return value
 
     @classmethod
