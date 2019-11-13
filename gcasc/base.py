@@ -1,6 +1,8 @@
 from abc import ABC
 from enum import Enum
 
+import gitlab
+
 
 class Mode(Enum):
     TEST = -1
@@ -8,7 +10,9 @@ class Mode(Enum):
 
 
 class Configurer(ABC):
+
     def __init__(self, gitlab, config, mode=Mode.APPLY):
+        # type: (gitlab.Gitlab, dict, Mode)->any
         self.gitlab = gitlab
         self.config = config
         self.mode = mode

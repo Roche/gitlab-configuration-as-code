@@ -29,6 +29,7 @@ logger = logging.get_logger()
 class GitlabConfigurationAsCode(object):
 
     def __init__(self):
+        # type: ()->GitlabConfigurationAsCode
         mode = Mode[uos.get_env_or_else(GITLAB_MODE, Mode.TEST.name)]
         if mode == Mode.TEST:
             logger.info("TEST MODE ENABLED. NO CHANGES WILL BE APPLIED")
@@ -40,6 +41,7 @@ class GitlabConfigurationAsCode(object):
 
     @property
     def settings(self):
+        # type: ()->SettingsConfigurer
         return self.configurers['settings']
 
     def configure(self, target=None):
@@ -49,6 +51,7 @@ class GitlabConfigurationAsCode(object):
 
 
 def init_gitlab_from_env():
+    # type: ()->gitlab.Gitlab
     token = uos.get_env_or_else(GITLAB_CLIENT_TOKEN)
     if token is None:
         raise ClientInitializationError(
@@ -62,11 +65,13 @@ def init_gitlab_from_env():
 
 
 def init_gitlab_from_config_file():
+    # type: ()->gitlab.Gitlab
     config_path = __find_gitlab_connection_config_file()
     return gitlab.Gitlab.from_config('global', [config_path]) if config_path is not None else None
 
 
 def init_gitlab_client():
+    # type: ()->gitlab.Gitlab
     logger.info('Initializing GitLab client')
     logger.info('Trying to initialize GitLab client from configuration file...')
     client = init_gitlab_from_config_file()
@@ -83,6 +88,7 @@ def init_gitlab_client():
 
 
 def __find_gitlab_connection_config_file():
+    # type: ()->str
     config_path = uos.get_env_or_else(GITLAB_CLIENT_CONFIG_FILE)
     if config_path is not None:
         if not __check_file_exists(config_path, 'GitLab Client'):
@@ -101,6 +107,7 @@ def __find_gitlab_connection_config_file():
 
 
 def __check_file_exists(path, file_context=''):
+    # type: (str, str)->bool
     config = Path(path)
     if not config.exists():
         logger.error(
@@ -116,6 +123,7 @@ def __check_file_exists(path, file_context=''):
 
 
 def __init_session(gitlab):
+    # type: (gitlab.Gitlab)->()
     certificate = uos.get_env_or_else(GITLAB_CLIENT_CERTIFICATE)
     key = uos.get_env_or_else(GITLAB_CLIENT_KEY)
     if certificate is None and key is None:

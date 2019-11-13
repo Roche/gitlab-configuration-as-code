@@ -10,9 +10,11 @@ YamlIncluderConstructor.add_to_loader_class(
 
 YamlEnvConstructor.add_to_loader_class(loader_class=yaml.FullLoader)
 
+
 class GitlabConfiguration(object):
 
     def __init__(self, config):
+        # type: (dict)->GitlabConfiguration
         if config is None:
             raise RuntimeError("GitLab configuration is empty")
 
@@ -23,10 +25,12 @@ class GitlabConfiguration(object):
 
     @property
     def settings(self):
+        # type: ()->dict
         return self.config['settings']
 
     @staticmethod
     def from_file(path):
+        # type: (str)->GitlabConfiguration
         with open(path) as file:
             data = yaml.load(file, Loader=yaml.FullLoader)
         return GitlabConfiguration(data)

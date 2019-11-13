@@ -1,3 +1,4 @@
+import gitlab
 import utils.logger as logger
 
 from .base import Configurer, Mode
@@ -8,6 +9,7 @@ logger = logger.get_logger('configurer.applicationsettings')
 class SettingsConfigurer(Configurer):
 
     def __init__(self, gitlab, settings, mode):
+        # type: (gitlab.Gitlab, dict, Mode)->SettingsConfigurer
         super().__init__(gitlab, settings, mode=mode)
 
     def configure(self):
@@ -26,6 +28,7 @@ class SettingsConfigurer(Configurer):
         return settings
 
     def _update_setting(self, current, new, changes=0, prefix=''):
+        # type: (dict, dict, int, str)->int
         for key, value in new.items():
             if isinstance(value, dict):
                 self._update_setting(current, value, changes, '{0}_'.format(key))
