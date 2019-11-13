@@ -3,7 +3,7 @@ settings:
   asset_proxy:
     enabled: False
   external_authorization_service: !include external_auth.yml
-  recaptcha_enabled: !env RECAPTCHA_ENABLED
+  recaptcha_enabled: !env RECAPTCHA_ENABLED:True # True if RECAPTCHA_ENABLED is not found in environment
   repository_storages:
     - !env REPO_STORAGE_1
     - !env REPO_STORAGE_2

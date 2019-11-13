@@ -26,7 +26,9 @@ class YamlEnvConstructor:
 
     @staticmethod
     def load(env):
-        value = os.getenv(env)
+        # type: (str)-> str
+        splitted = env.split(':', 1)
+        value = os.getenv(splitted[0], splitted[1] if splitted.__len__() == 2 else None)
         if value is None:
             raise RuntimeError('Expected {0} environment variable, but value was not found in environment'.format(env))
         return value
