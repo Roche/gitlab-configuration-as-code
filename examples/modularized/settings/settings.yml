@@ -1,0 +1,9 @@
+# Reference: https://docs.gitlab.com/12.4/ee/api/settings.html
+
+asset_proxy: !include asset_proxy.yml
+external_authorization_service: !include external_auth.yml
+recaptcha_enabled: yes
+terms: !include tos.md
+plantuml:
+  enabled: True
+  url: 'http://plantuml.url'

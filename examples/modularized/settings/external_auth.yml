@@ -1,0 +1,4 @@
+enabled: True
+default_label: 'some label'
+timeout: 55
+url: 'https://some.external.auth.service.url'

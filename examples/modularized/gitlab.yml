@@ -1,0 +1,3 @@
+# Reference: https://docs.gitlab.com/12.4/ee/api/settings.html
+
+settings: !include settings/settings.yml
