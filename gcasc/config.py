@@ -2,11 +2,13 @@ import os
 
 import yaml
 from utils.yaml_include import YamlIncluderConstructor
+from utils.yaml_env import YamlEnvConstructor
 
 YamlIncluderConstructor.add_to_loader_class(
     loader_class=yaml.FullLoader,
     base_dir=os.path.dirname(os.path.realpath(__file__)))
 
+YamlEnvConstructor.add_to_loader_class(loader_class=yaml.FullLoader)
 
 class GitlabConfiguration(object):
 
