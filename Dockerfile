@@ -8,4 +8,5 @@ COPY bin ./bin
 COPY gcasc ./gcasc
 COPY utils ./utils
 ENV PYTHONPATH /workspace
+ENV GITLAB_CONFIG_FILE gitlab.yml
 CMD [ "bin/gcasc" ]
