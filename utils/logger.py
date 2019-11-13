@@ -1,6 +1,10 @@
 import logging
+import os
 
-logging.basicConfig(format='[%(levelname)s] [%(name)s] %(message)s', level=logging.DEBUG)
+level_str = os.getenv('LOGGING_LEVEL', 'INFO')
+level = logging.getLevelName(level_str)
+
+logging.basicConfig(format='[%(levelname)s] [%(name)s] %(message)s', level=level)
 
 
 def get_logger(name='gcasc'):
