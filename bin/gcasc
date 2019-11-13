@@ -1,0 +1,6 @@
+#!/usr/bin/env python3
+
+from gcasc import GitlabConfigurationAsCode
+
+if __name__ == '__main__':
+    GitlabConfigurationAsCode().configure()
