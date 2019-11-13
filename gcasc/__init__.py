@@ -63,19 +63,17 @@ def init_gitlab_from_env():
 
 def init_gitlab_from_config_file():
     config_path = __find_gitlab_connection_config_file()
-    if config_path is None:
-        raise ClientInitializationError('')
-    return gitlab.Gitlab.from_config('global', [config_path])
+    return gitlab.Gitlab.from_config('global', [config_path]) if config_path is not None else None
 
 
 def init_gitlab_client():
     logger.info('Initializing GitLab client')
-    try:
-        logger.info('Trying to initialize GitLab client from configuration file...')
-        client = init_gitlab_from_config_file()
-    except ClientInitializationError:
+    logger.info('Trying to initialize GitLab client from configuration file...')
+    client = init_gitlab_from_config_file()
+    if client is None:
         logger.info('Trying to initialize GitLab client from environment variables...')
         client = init_gitlab_from_env()
+
     if client is None:
         raise ClientInitializationError('Unable to initialize GitLab client due to missing configuration either in '
                                         'config file or environment vars')
@@ -87,35 +85,34 @@ def init_gitlab_client():
 def __find_gitlab_connection_config_file():
     config_path = uos.get_env_or_else(GITLAB_CLIENT_CONFIG_FILE)
     if config_path is not None:
-        try:
-            __check_file_exists(config_path, 'GitLab Client')
-        except FileNotFoundError:
-            raise ClientInitializationError(
-                'Configuration file was not found under path {0}, which was defined in {1} env variable.'
+        if not __check_file_exists(config_path, 'GitLab Client'):
+            logger.error(
+                'Configuration file was not found under path %s, which was defined in %s env variable.'
                 'Provide path to existing file or remove this variable and configure client'
-                'using environment variables instead of configuration file'.format(config_path,
-                                                                                   GITLAB_CLIENT_CONFIG_FILE))
+                'using environment variables instead of configuration file', config_path,
+                GITLAB_CLIENT_CONFIG_FILE)
+            return None
     else:
         for path in GITLAB_CONFIG_FILE_DEFAULT_PATHS:
-            try:
-                __check_file_exists(path, 'GitLab Client')
+            if __check_file_exists(path, 'GitLab Client'):
                 config_path = path
                 break
-            except FileNotFoundError:
-                pass
     return config_path
 
 
 def __check_file_exists(path, file_context=''):
     config = Path(path)
     if not config.exists():
-        raise FileNotFoundError(
-            '[{0}] File under '' + path + '' does not exist. Provide valid path.'.format(file_context))
+        logger.error(
+            '[%s] File under %a does not exist. Provide valid path.', file_context, path)
+        return False
 
     if config.is_dir():
-        raise FileNotFoundError(
-            '[{0}] Directory was found under '' + path + '' instead of file. Provide valid path to file.'.format(
-                file_context))
+        logger.error(
+            '[%s] Directory was found under %s instead of file. Provide valid path to file.',
+            file_context, path)
+        return False
+    return True
 
 
 def __init_session(gitlab):
@@ -128,8 +125,10 @@ def __init_session(gitlab):
     elif certificate is not None and key is None:
         pass
     else:
-        __check_file_exists(certificate, 'Client Certificate')
-        __check_file_exists(key, 'Client Key')
+        check_config = __check_file_exists(certificate, 'Client Certificate') and __check_file_exists(key, 'Client Key')
+        if not check_config:
+            raise ClientInitializationError(
+                'GitLab client authentication env vars were provided, but point to incorrect file(s)')
         session = requests.Session()
         session.cert = (certificate, key)
         gitlab.session = session
