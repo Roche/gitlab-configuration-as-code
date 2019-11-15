@@ -35,7 +35,7 @@ class SettingsConfigurer(Configurer):
                 continue
 
             if isinstance(value, list):
-                logger.warning('List is not supported')
+                logger.warn('List is not supported')
                 continue
 
             prefixed_key = '{0}{1}'.format(prefix, key)
@@ -48,7 +48,7 @@ class SettingsConfigurer(Configurer):
                     logger.log_update(prefixed_key, current_value, value)
                     setattr(current, prefixed_key, value)
             else:
-                logger.warning('Found invalid configuration option: %s', prefixed_key)
+                logger.warn('Found invalid configuration option: %s', prefixed_key)
         return changes
 
     def validate(self):
