@@ -28,7 +28,4 @@ class Configurer(ABC):
         if self.gitlab is None:
             raise RuntimeError('GitLab client is not provided')
 
-        if self.config is None:
-            raise RuntimeError('Configuration was not provided')
-
         self.validate()
