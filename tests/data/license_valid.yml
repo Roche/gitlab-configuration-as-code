@@ -1,0 +1,5 @@
+license:
+  starts_at: 2019-11-17
+  plan: premium
+  user_limit: 30
+  data: some_license_data
