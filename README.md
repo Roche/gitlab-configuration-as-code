@@ -37,7 +37,7 @@ cd python-gitlab/
 pip3 install --user tox
 tox -e black
 ```
-to format your code according to our guidelines (`tox` is required).
+to format your code according to our guidelines ([tox](https://tox.readthedocs.io/en/latest/) is required).
 
 Additionally, `flake8` linter is used to verify code style. It must succeeded
 in order to make pull request approved.
