@@ -1,3 +1,4 @@
 license:
   starts_at: invalid_date
+  expires_at: another_invalid_date
   plan: wrong_plan

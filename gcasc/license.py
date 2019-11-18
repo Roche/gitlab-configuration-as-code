@@ -28,20 +28,22 @@ class LicenseConfigurer(Configurer):
         )
         return license
 
-    def __get(self, field, lic=None):  # type: (str, dict) -> str
-        license_config = lic if lic is not None else self.config
+    def __get(self, field, license=None):  # type: (str, dict) -> str
+        license_config = license if license is not None else self.config
         return license_config.get(field)
 
+    def __get_date(self, field, license=None):
+        date = self.__get(field, license)
+        return date.strftime("%Y-%m-%d") if isinstance(date, datetime.date) else date
+
     def __get_starts_at(self, license=None):  # type: (dict) -> str
-        starts_at = self.__get('starts_at', license)
-        s_at = starts_at.strftime("%Y-%m-%d") if isinstance(starts_at, datetime.date) else starts_at
-        return s_at
+        return self.__get_date('starts_at', license)
+
+    def __get_expires_at(self, license=None):  # type: (dict) -> str
+        return self.__get_date('expires_at', license)
 
     def __get_plan(self, license=None):  # type: (dict) -> str
         return self.__get('plan', license)
-
-    def __get_expires_at(self, license=None):  # type: (dict) -> str
-        return self.__get('expires_at', license)
 
     def __get_user_limit(self, license=None):  # type: (dict) -> str
         return self.__get('user_limit', license)
@@ -52,6 +54,7 @@ class LicenseConfigurer(Configurer):
     def __check_if_same_license(self, license):
         return (
                 self.__get_starts_at() == self.__get_starts_at(license)
+                and self.__get_expires_at() == self.__get_expires_at(license)
                 and self.__get_plan() == self.__get_plan(license)
                 and self.__get_user_limit() == self.__get_user_limit(license)
         )
@@ -66,6 +69,10 @@ class LicenseConfigurer(Configurer):
             errors.add("License must have starts_at property set in format yyyy-MM-dd")
         elif not validators.validate_date(self.__get_starts_at(), "%Y-%m-%d"):
             errors.add("starts_at license property must follow format yyyy-MM-dd, e.g. 2019-03-28")
+        if not self.__get_expires_at():
+            errors.add("License must have expires_at property set in format yyyy-MM-dd")
+        elif not validators.validate_date(self.__get_expires_at(), "%Y-%m-%d"):
+            errors.add("expires_at license property must follow format yyyy-MM-dd, e.g. 2019-03-28")
         if not self.__get_plan():
             errors.add("License must have plan property set")
         elif not self.__get_plan() in ["starter", "premium", "ultimate"]:

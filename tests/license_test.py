@@ -36,8 +36,9 @@ def test_license_configuration_invalid(license_invalid):
 
     # then
     assert result.has_errors()
-    assert result.errors.__len__() == 4
+    assert result.errors.__len__() == 5
     assert result.has_error('starts_at')
+    assert result.has_error('expires_at')
     assert result.has_error('plan')
     assert result.has_error('user_limit')
     assert result.has_error('data')
@@ -48,6 +49,7 @@ def test_license_not_updated_because_same_exists(license_valid):
     gitlab = Mock()
     gitlab.get_license.return_value = {
         'starts_at': license_valid['starts_at'],
+        'expires_at': license_valid['expires_at'],
         'plan': license_valid['plan'],
         'user_limit': license_valid['user_limit'],
     }
@@ -66,6 +68,7 @@ def test_license_updated(license_valid):
     gitlab = Mock()
     gitlab.get_license.return_value = {
         'starts_at': '1900-01-01',
+        'expires_at': license_valid['expires_at'],
         'plan': license_valid['plan'],
         'user_limit': license_valid['user_limit'],
     }
