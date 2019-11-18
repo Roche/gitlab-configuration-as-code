@@ -1,6 +1,6 @@
 # GitLab Configuration as Code (*GCasC*)
 
-Manage GitLab configuration as code to make it easily manageable and reproducible.
+Manage GitLab configuration as code to make it easily manageable, traceable and reproducible.
 
 
 ## Introduction
@@ -24,33 +24,7 @@ Manage GitLab configuration as code to make it easily manageable and reproducibl
 ### Examples
 
 
-## Contributing
-
-### Code style
-
-We use black as code formatter, so you'll need to format your changes using 
-the [black code formatter](https://github.com/python/black).
-
-Just run:
-```bash
-cd python-gitlab/
-pip3 install --user tox
-tox -e black
-```
-to format your code according to our guidelines (`tox` is required).
-
-Additionally, `flake8` linter is used to verify code style. It must succeeded
-in order to make pull request approved.
-
-Just run:
-```bash
-cd python-gitlab/
-pip3 install --user tox
-tox -e flake
-```
-to verify code style according to our guidelines (`tox` is required).
-
-### Testing
+## Testing
 
 Before submitting a pull request make sure that the tests still succeed with your change. 
 Unit tests run using Github Actions and passing tests are mandatory 
@@ -82,3 +56,15 @@ make lint
 ```
 
 ## Troubleshooting
+
+
+## Contribution
+
+Everyone is warm welcome to contribute!
+
+Please make sure to read the [Contributing Guide](CONTRIBUTING.md) and [Code of Conduct](CODE_OF_CONDUCT.md) 
+before making a pull request.
+
+## License
+
+Project is released under [Apache License, Version 2.0 license](LICENSE).
