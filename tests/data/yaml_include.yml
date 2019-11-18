@@ -1,0 +1,4 @@
+inc1: !include yaml_include_f1.yml
+inc2:
+  - !include yaml_include_f2.yml
+  - !include yaml_include_txt.md
