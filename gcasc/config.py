@@ -1,18 +1,17 @@
 import os
 
 import yaml
-from utils.yaml_include import YamlIncluderConstructor
-from utils.yaml_env import YamlEnvConstructor
+from gcasc.utils.yaml_include import YamlIncluderConstructor
+from gcasc.utils.yaml_env import YamlEnvConstructor
 
 YamlIncluderConstructor.add_to_loader_class(
-    loader_class=yaml.FullLoader,
-    base_dir=os.path.dirname(os.path.realpath(__file__)))
+    loader_class=yaml.FullLoader, base_dir=os.path.dirname(os.path.realpath(__file__))
+)
 
 YamlEnvConstructor.add_to_loader_class(loader_class=yaml.FullLoader)
 
 
 class GitlabConfiguration(object):
-
     def __init__(self, config):
         # type: (dict)->GitlabConfiguration
         if config is None:
@@ -26,7 +25,7 @@ class GitlabConfiguration(object):
     @property
     def settings(self):
         # type: ()->dict
-        return self.config['settings']
+        return self.config.get("settings")
 
     @staticmethod
     def from_file(path):

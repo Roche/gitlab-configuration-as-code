@@ -19,11 +19,11 @@ try:
 except ImportError:
     FullLoader = None
 
-__all__ = ['YamlIncluderConstructor']
+__all__ = ["YamlIncluderConstructor"]
 
-PYTHON_MAYOR_MINOR = '{0[0]}.{0[1]}'.format(version_info)
+PYTHON_MAYOR_MINOR = "{0[0]}.{0[1]}".format(version_info)
 
-WILDCARDS_REGEX = re.compile(r'^.*(\*|\?|\[!?.+\]).*$')
+WILDCARDS_REGEX = re.compile(r"^.*(\*|\?|\[!?.+\]).*$")
 
 
 class YamlIncluderConstructor:
@@ -41,8 +41,8 @@ class YamlIncluderConstructor:
 
     """
 
-    DEFAULT_ENCODING = 'utf-8'
-    DEFAULT_TAG_NAME = '!include'
+    DEFAULT_ENCODING = "utf-8"
+    DEFAULT_TAG_NAME = "!include"
 
     def __init__(self, base_dir=None, encoding=None):
         # type:(str, str)->YamlIncluderConstructor
@@ -68,7 +68,7 @@ class YamlIncluderConstructor:
         elif isinstance(node, yaml.nodes.MappingNode):
             kwargs = loader.construct_mapping(node)
         else:
-            raise TypeError('Un-supported YAML node {!r}'.format(node))
+            raise TypeError("Un-supported YAML node {!r}".format(node))
         return self.load(loader, *args, **kwargs)
 
     @property
@@ -98,7 +98,7 @@ class YamlIncluderConstructor:
     @staticmethod
     def is_yaml(path):
         _, extension = os.path.splitext(path)
-        return True if extension in ['.yml', 'yaml'] else False
+        return True if extension in [".yml", "yaml"] else False
 
     def load(self, loader, pathname, recursive=False, encoding=None):
         """Once add the constructor to PyYAML loader class,
@@ -127,13 +127,15 @@ class YamlIncluderConstructor:
             pathname = os.path.join(self._base_dir, pathname)
         if re.match(WILDCARDS_REGEX, pathname):
             result = []
-            if PYTHON_MAYOR_MINOR >= '3.5':
+            if PYTHON_MAYOR_MINOR >= "3.5":
                 iterator = iglob(pathname, recursive=recursive)
             else:
                 iterator = iglob(pathname)
             for path in iterator:
                 if os.path.isfile(path):
-                    with io.open(path, encoding=encoding) as fp:  # pylint:disable=invalid-name
+                    with io.open(
+                        path, encoding=encoding
+                    ) as fp:  # pylint:disable=invalid-name
                         result.append(yaml.load(fp, type(loader)))
             return result
         with open(pathname, encoding=encoding) as fp:  # pylint:disable=invalid-name
@@ -181,11 +183,11 @@ class YamlIncluderConstructor:
         :rtype: YamlIncluderConstructor
         """
         if tag is None:
-            tag = ''
+            tag = ""
         tag = tag.strip()
         if not tag:
             tag = cls.DEFAULT_TAG_NAME
-        if not tag.startswith('!'):
+        if not tag.startswith("!"):
             raise ValueError('`tag` argument should start with character "!"')
         instance = cls(**kwargs)
         if loader_class is None:

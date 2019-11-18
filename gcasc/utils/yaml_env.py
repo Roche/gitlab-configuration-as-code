@@ -8,11 +8,11 @@ try:
 except ImportError:
     FullLoader = None
 
-__all__ = ['YamlEnvConstructor']
+__all__ = ["YamlEnvConstructor"]
 
 
 class YamlEnvConstructor:
-    DEFAULT_TAG_NAME = '!env'
+    DEFAULT_TAG_NAME = "!env"
 
     def __call__(self, loader, node):
         args = []
@@ -21,16 +21,20 @@ class YamlEnvConstructor:
         elif isinstance(node, yaml.nodes.SequenceNode):
             args = loader.construct_sequence(node)
         else:
-            raise TypeError('Un-supported YAML node {!r}'.format(node))
+            raise TypeError("Un-supported YAML node {!r}".format(node))
         return YamlEnvConstructor.load(*args)
 
     @staticmethod
     def load(env):
         # type: (str)-> str
-        splitted = env.split(':', 1)
+        splitted = env.split(":", 1)
         value = os.getenv(splitted[0], splitted[1] if splitted.__len__() == 2 else None)
         if value is None:
-            raise RuntimeError('Expected {0} environment variable, but value was not found in environment'.format(env))
+            raise RuntimeError(
+                "Expected {0} environment variable, but value was not found in environment".format(
+                    env
+                )
+            )
         return value
 
     @classmethod
@@ -38,11 +42,11 @@ class YamlEnvConstructor:
         # type: (type(yaml.Loader), str, **str)-> YamlEnvConstructor
 
         if tag is None:
-            tag = ''
+            tag = ""
         tag = tag.strip()
         if not tag:
             tag = cls.DEFAULT_TAG_NAME
-        if not tag.startswith('!'):
+        if not tag.startswith("!"):
             raise ValueError('`tag` argument should start with character "!"')
         instance = cls(**kwargs)
         if loader_class is None:

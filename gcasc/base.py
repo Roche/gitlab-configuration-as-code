@@ -1,8 +1,6 @@
 from abc import ABC
 from enum import Enum
 
-import gitlab
-
 
 class Mode(Enum):
     TEST = -1
@@ -10,7 +8,6 @@ class Mode(Enum):
 
 
 class Configurer(ABC):
-
     def __init__(self, gitlab, config, mode=Mode.APPLY):
         # type: (gitlab.Gitlab, dict, Mode)->any
         self.gitlab = gitlab
@@ -26,6 +23,6 @@ class Configurer(ABC):
 
     def _validate(self):
         if self.gitlab is None:
-            raise RuntimeError('GitLab client is not provided')
-
-        self.validate()
+            raise RuntimeError("GitLab client is not provided")
+        if self.config is not None:
+            self.validate()
