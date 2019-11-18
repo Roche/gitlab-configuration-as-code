@@ -18,7 +18,7 @@ setup(
     author_email="mateusz.filipowicz@roche.com",
     license="Apache-2.0",
     url="https://github.com/Roche/gitlab-configuration-as-code",
-    keywords="gitlab configuration devops",
+    keywords=['gitlab', 'configuration-as-code'],
     packages=find_packages(),
     install_requires=requirements,
     entry_points={"console_scripts": ["gitlab = bin.gcasc:main"]},
