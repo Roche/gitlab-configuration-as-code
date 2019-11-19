@@ -20,14 +20,14 @@ GITLAB_CLIENT_TOKEN = "GITLAB_CLIENT_TOKEN"
 GITLAB_CLIENT_SSL_VERIFY = "GITLAB_CLIENT_SSL_VERIFY"
 GITLAB_CONFIG_FILE = ["GITLAB_CONFIG_FILE", "GITLAB_CONFIG_PATH"]
 
+GITLAB_MODE = "GITLAB_MODE"
+
 GITLAB_CONFIG_FILE_DEFAULT_PATHS = [
     "/etc/python-gitlab.cfg",
     "/etc/gitlab.cfg",
     "~/.python-gitlab.cfg",
     "~/.gitlab.cfg",
 ]
-
-GITLAB_MODE = "GITLAB_MODE"
 
 logger = logging.get_logger()
 
