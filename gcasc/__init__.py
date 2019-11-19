@@ -4,12 +4,12 @@ import gitlab
 import requests
 
 import gcasc.utils.os as uos
+from .utils import logger as logging
 
 from .base import Mode
-from .config import GitlabConfiguration
 from .license import LicenseConfigurer
 from .settings import SettingsConfigurer
-from .utils import logger as logging
+from .config import GitlabConfiguration
 
 GITLAB_CLIENT_CONFIG_FILE = ["GITLAB_CLIENT_CONFIG", "GITLAB_CLIENT_CONFIG_FILE"]
 GITLAB_CLIENT_CERTIFICATE = ["GITLAB_CLIENT_CERT", "GITLAB_CLIENT_CERTIFICATE"]
@@ -20,8 +20,6 @@ GITLAB_CLIENT_TOKEN = "GITLAB_CLIENT_TOKEN"
 GITLAB_CLIENT_SSL_VERIFY = "GITLAB_CLIENT_SSL_VERIFY"
 GITLAB_CONFIG_FILE = ["GITLAB_CONFIG_FILE", "GITLAB_CONFIG_PATH"]
 
-GITLAB_MODE = "GITLAB_MODE"
-
 GITLAB_CONFIG_FILE_DEFAULT_PATHS = [
     "/etc/python-gitlab.cfg",
     "/etc/gitlab.cfg",
@@ -29,24 +27,26 @@ GITLAB_CONFIG_FILE_DEFAULT_PATHS = [
     "~/.gitlab.cfg",
 ]
 
+GITLAB_MODE = "GITLAB_MODE"
+
 logger = logging.get_logger()
 
 
 class GitlabConfigurationAsCode(object):
     def __init__(self):
         # type: ()->GitlabConfigurationAsCode
-        self.mode = Mode[uos.get_env_or_else(GITLAB_MODE, Mode.APPLY.name)]
-        if self.mode == Mode.TEST:
+        mode = Mode[uos.get_env_or_else(GITLAB_MODE, Mode.TEST.name)]
+        if mode == Mode.TEST:
             logger.info("TEST MODE ENABLED. NO CHANGES WILL BE APPLIED")
         path = uos.get_env_or_else(GITLAB_CONFIG_FILE, "gitlab.yml")
         self.gitlab = init_gitlab_client()
         self.configurers = {}
         self.config = GitlabConfiguration.from_file(path)
         self.configurers["settings"] = SettingsConfigurer(
-            self.gitlab, self.config.settings, self.mode
+            self.gitlab, self.config.settings, mode
         )
         self.configurers["license"] = LicenseConfigurer(
-            self.gitlab, self.config.license, self.mode
+            self.gitlab, self.config.license, mode
         )
 
         version, revision = self.gitlab.version()
@@ -115,7 +115,7 @@ def init_gitlab_client():
     if client is None:
         raise ClientInitializationError(
             "Unable to initialize GitLab client due to missing configuration either in "
-            "config file or environment variables"
+            "config file or environment vars"
         )
 
     __init_session(client)

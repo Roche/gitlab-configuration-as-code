@@ -11,9 +11,7 @@ class Mode(Enum):
 
 
 class Configurer(ABC):
-    def __init__(
-        self, gitlab, config, mode=Mode.APPLY
-    ):  # type: (Gitlab, dict, Mode)->any
+    def __init__(self, gitlab, config, mode=Mode.APPLY):  # type: (Gitlab, dict, Mode)->any
         self.gitlab = gitlab
         self.config = config
         self.mode = mode
@@ -31,12 +29,13 @@ class Configurer(ABC):
             raise RuntimeError("GitLab client is not provided")
         if self.config is not None:
             result = self.validate()
-            if result and result.has_errors():
+            if result.has_errors():
                 error = ValidationError.from_validation_result(result)
                 raise error
 
 
 class ValidationResult(object):
+
     def __init__(self, errors=None):
         self.errors = [] if errors is None else errors
 
@@ -48,7 +47,7 @@ class ValidationResult(object):
         return self.errors
 
     def get_as_string(self):
-        return "\n".join(self.errors)
+        return '\n'.join(self.errors)
 
     def has_errors(self):
         return self.errors.__len__() > 0
@@ -61,11 +60,10 @@ class ValidationResult(object):
 
 
 class ValidationError(RuntimeError):
+
     @staticmethod
     def from_validation_result(validation_result):
         if validation_result is None:
-            return ValidationError("Validation failed, but no errors provided")
+            return ValidationError('Validation failed, but no errors provided')
         errors = validation_result.get_as_string()
-        return ValidationError(
-            "Configuration validation failed with errors:\n{0}".format(errors)
-        )
+        return ValidationError('Configuration validation failed with errors:\n{0}'.format(errors))
