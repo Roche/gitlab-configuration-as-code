@@ -1,0 +1,5 @@
+env1: !env ENV1
+env_list:
+  - !env ENV1
+  - someval
+  - !env ENV2
