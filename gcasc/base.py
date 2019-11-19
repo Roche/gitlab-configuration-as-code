@@ -29,7 +29,7 @@ class Configurer(ABC):
             raise RuntimeError("GitLab client is not provided")
         if self.config is not None:
             result = self.validate()
-            if result.has_errors():
+            if result and result.has_errors():
                 error = ValidationError.from_validation_result(result)
                 raise error
 
