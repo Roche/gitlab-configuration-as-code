@@ -22,10 +22,18 @@ class GitlabConfiguration(object):
 
         self.config = config
 
+    def __get(self, configuration):
+        return self.config.get(configuration)
+
     @property
     def settings(self):
         # type: ()->dict
-        return self.config.get("settings")
+        return self.__get("settings")
+
+    @property
+    def license(self):
+        # type: ()->dict
+        return self.__get("license")
 
     @staticmethod
     def from_file(path):

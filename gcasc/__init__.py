@@ -7,6 +7,7 @@ import gcasc.utils.os as uos
 from .utils import logger as logging
 
 from .base import Mode
+from .license import LicenseConfigurer
 from .settings import SettingsConfigurer
 from .config import GitlabConfiguration
 
@@ -44,6 +45,10 @@ class GitlabConfigurationAsCode(object):
         self.configurers["settings"] = SettingsConfigurer(
             self.gitlab, self.config.settings, mode
         )
+        self.configurers["license"] = LicenseConfigurer(
+            self.gitlab, self.config.license, mode
+        )
+
         version, revision = self.gitlab.version()
         logger.info("GitLab version: %s, revision: %s", version, revision)
 
@@ -51,6 +56,11 @@ class GitlabConfigurationAsCode(object):
     def settings(self):
         # type: ()->SettingsConfigurer
         return self.configurers["settings"]
+
+    @property
+    def license(self):
+        # type: ()->LicenseConfigurer
+        return self.configurers["license"]
 
     def configure(self, target=None):
         if target is None:
