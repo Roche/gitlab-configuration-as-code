@@ -3,7 +3,7 @@ import os
 import pytest
 from mock import Mock, patch
 
-from gcasc import GitlabConfigurationAsCode, ClientInitializationError, Mode
+from gcasc import ClientInitializationError, GitlabConfigurationAsCode, Mode
 from tests import helpers
 
 GITLAB_CLIENT_CONFIG_FILE = ["GITLAB_CLIENT_CONFIG", "GITLAB_CLIENT_CONFIG_FILE"]

@@ -1,6 +1,7 @@
 import os
 
 import yaml
+
 try:
     from StringIO import StringIO
 except ImportError:

@@ -1,8 +1,9 @@
+from unittest.mock import Mock
+
 import pytest
 
-from unittest.mock import Mock
-from gcasc import SettingsConfigurer
-from gcasc import Mode
+from gcasc import Mode, SettingsConfigurer
+
 from .helpers import read_yaml
 
 

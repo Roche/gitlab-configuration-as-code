@@ -1,14 +1,13 @@
-import gitlab
-
-from .utils import logger
-
 from .base import Configurer, Mode
+from .utils import logger
 
 logger = logger.get_logger("configurer.applicationsettings")
 
 
 class SettingsConfigurer(Configurer):
-    def __init__(self, gitlab, settings, mode=Mode.APPLY):  # type: (gitlab.Gitlab, dict, Mode)->SettingsConfigurer
+    def __init__(
+        self, gitlab, settings, mode=Mode.APPLY
+    ):  # type: (gitlab.Gitlab, dict, Mode)->SettingsConfigurer
         super().__init__(gitlab, settings, mode=mode)
 
     def configure(self):
@@ -26,10 +25,14 @@ class SettingsConfigurer(Configurer):
             logger.info("Nothing to do")
         return settings
 
-    def _update_setting(self, current, new, changes=0, prefix=""):  # type: (dict, dict, int, str)->int
+    def _update_setting(
+        self, current, new, changes=0, prefix=""
+    ):  # type: (dict, dict, int, str)->int
         for key, value in new.items():
             if isinstance(value, dict):
-                changes += self._update_setting(current, value, changes, "{0}_".format(key))
+                changes += self._update_setting(
+                    current, value, changes, "{0}_".format(key)
+                )
                 continue
 
             if isinstance(value, list):

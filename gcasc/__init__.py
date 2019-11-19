@@ -4,12 +4,12 @@ import gitlab
 import requests
 
 import gcasc.utils.os as uos
-from .utils import logger as logging
 
 from .base import Mode
+from .config import GitlabConfiguration
 from .license import LicenseConfigurer
 from .settings import SettingsConfigurer
-from .config import GitlabConfiguration
+from .utils import logger as logging
 
 GITLAB_CLIENT_CONFIG_FILE = ["GITLAB_CLIENT_CONFIG", "GITLAB_CLIENT_CONFIG_FILE"]
 GITLAB_CLIENT_CERTIFICATE = ["GITLAB_CLIENT_CERT", "GITLAB_CLIENT_CERTIFICATE"]

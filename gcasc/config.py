@@ -1,8 +1,9 @@
 import os
 
 import yaml
-from gcasc.utils.yaml_include import YamlIncluderConstructor
+
 from gcasc.utils.yaml_env import YamlEnvConstructor
+from gcasc.utils.yaml_include import YamlIncluderConstructor
 
 YamlIncluderConstructor.add_to_loader_class(
     loader_class=yaml.FullLoader, base_dir=os.path.dirname(os.path.realpath(__file__))

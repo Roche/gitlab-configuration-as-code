@@ -3,8 +3,9 @@ import os
 import pytest
 import yaml
 
-from .helpers import read_yaml
 from gcasc.utils.yaml_env import YamlEnvConstructor
+
+from .helpers import read_yaml
 
 YamlEnvConstructor.add_to_loader_class(loader_class=yaml.FullLoader)
 

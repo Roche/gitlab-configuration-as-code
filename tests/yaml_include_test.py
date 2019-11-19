@@ -3,9 +3,9 @@ import os
 import pytest
 import yaml
 
-from .helpers import read_yaml, read_file
-
 from gcasc.utils.yaml_include import YamlIncluderConstructor
+
+from .helpers import read_file, read_yaml
 
 YamlIncluderConstructor.add_to_loader_class(loader_class=yaml.FullLoader,
                                             base_dir=os.path.dirname(os.path.realpath(__file__)) + '/data')

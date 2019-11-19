@@ -1,8 +1,9 @@
+from unittest.mock import Mock
+
 import pytest
 
-from unittest.mock import Mock
-from gcasc import LicenseConfigurer
-from gcasc import Mode
+from gcasc import LicenseConfigurer, Mode
+
 from .helpers import read_yaml
 
 
@@ -80,5 +81,3 @@ def test_license_updated(license_valid):
     # then
     gitlab.get_license.assert_called_once()
     gitlab.set_license.assert_called_once_with(license_valid['data'])
-
-
