@@ -1,13 +1,13 @@
-from .utils import logger
-
 from .base import Configurer, Mode
+from .utils import logger
 
 logger = logger.get_logger("configurer.applicationsettings")
 
 
 class SettingsConfigurer(Configurer):
-    def __init__(self, gitlab, settings, mode):
-        # type: (gitlab.Gitlab, dict, Mode)->SettingsConfigurer
+    def __init__(
+        self, gitlab, settings, mode=Mode.APPLY
+    ):  # type: (gitlab.Gitlab, dict, Mode)->SettingsConfigurer
         super().__init__(gitlab, settings, mode=mode)
 
     def configure(self):
@@ -17,19 +17,22 @@ class SettingsConfigurer(Configurer):
         logger.info("Found %s changed values", changes)
         if changes != 0:
             logger.info("Applying changes...")
-            if self.mode == Mode.TEST:
-                logger.info("No changes will be applied due to test mode enabled")
-            else:
+            if self.mode == Mode.APPLY:
                 settings.save()
+            else:
+                logger.info("No changes will be applied due to test mode enabled")
         else:
             logger.info("Nothing to do")
         return settings
 
-    def _update_setting(self, current, new, changes=0, prefix=""):
-        # type: (dict, dict, int, str)->int
+    def _update_setting(
+        self, current, new, changes=0, prefix=""
+    ):  # type: (dict, dict, int, str)->int
         for key, value in new.items():
             if isinstance(value, dict):
-                self._update_setting(current, value, changes, "{0}_".format(key))
+                changes += self._update_setting(
+                    current, value, changes, "{0}_".format(key)
+                )
                 continue
 
             if isinstance(value, list):
@@ -44,7 +47,8 @@ class SettingsConfigurer(Configurer):
                 if current_value != value:
                     changes += 1
                     logger.log_update(prefixed_key, current_value, value)
-                    setattr(current, prefixed_key, value)
+                    if self.mode == Mode.APPLY:
+                        setattr(current, prefixed_key, value)
             else:
                 logger.warn("Found invalid configuration option: %s", prefixed_key)
         return changes

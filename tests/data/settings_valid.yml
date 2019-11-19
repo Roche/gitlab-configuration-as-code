@@ -1,0 +1,6 @@
+settings:
+  auto_devops_enabled: True
+  help_page:
+    text: 'Custom text displayed on the help page.'
+    support_url: 'Alternate support URL for help page and help dropdown.'
+  polling_interval_multiplier: 1
