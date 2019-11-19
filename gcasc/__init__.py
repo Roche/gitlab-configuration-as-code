@@ -35,18 +35,18 @@ logger = logging.get_logger()
 class GitlabConfigurationAsCode(object):
     def __init__(self):
         # type: ()->GitlabConfigurationAsCode
-        mode = Mode[uos.get_env_or_else(GITLAB_MODE, Mode.TEST.name)]
-        if mode == Mode.TEST:
+        self.mode = Mode[uos.get_env_or_else(GITLAB_MODE, Mode.APPLY.name)]
+        if self.mode == Mode.TEST:
             logger.info("TEST MODE ENABLED. NO CHANGES WILL BE APPLIED")
         path = uos.get_env_or_else(GITLAB_CONFIG_FILE, "gitlab.yml")
         self.gitlab = init_gitlab_client()
         self.configurers = {}
         self.config = GitlabConfiguration.from_file(path)
         self.configurers["settings"] = SettingsConfigurer(
-            self.gitlab, self.config.settings, mode
+            self.gitlab, self.config.settings, self.mode
         )
         self.configurers["license"] = LicenseConfigurer(
-            self.gitlab, self.config.license, mode
+            self.gitlab, self.config.license, self.mode
         )
 
         version, revision = self.gitlab.version()
@@ -115,7 +115,7 @@ def init_gitlab_client():
     if client is None:
         raise ClientInitializationError(
             "Unable to initialize GitLab client due to missing configuration either in "
-            "config file or environment vars"
+            "config file or environment variables"
         )
 
     __init_session(client)
