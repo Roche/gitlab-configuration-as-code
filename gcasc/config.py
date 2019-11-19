@@ -12,8 +12,7 @@ YamlEnvConstructor.add_to_loader_class(loader_class=yaml.FullLoader)
 
 
 class GitlabConfiguration(object):
-    def __init__(self, config):
-        # type: (dict)->GitlabConfiguration
+    def __init__(self, config):  # type: (dict)->GitlabConfiguration
         if config is None:
             raise RuntimeError("GitLab configuration is empty")
 
@@ -22,22 +21,19 @@ class GitlabConfiguration(object):
 
         self.config = config
 
-    def __get(self, configuration):
+    def __get(self, configuration):  # type: (str)->dict
         return self.config.get(configuration)
 
     @property
-    def settings(self):
-        # type: ()->dict
+    def settings(self):  # type: ()->dict
         return self.__get("settings")
 
     @property
-    def license(self):
-        # type: ()->dict
+    def license(self):  # type: ()->dict
         return self.__get("license")
 
     @staticmethod
-    def from_file(path):
-        # type: (str)->GitlabConfiguration
+    def from_file(path):  # type: (str)->GitlabConfiguration
         with open(path) as file:
             data = yaml.load(file, Loader=yaml.FullLoader)
         return GitlabConfiguration(data)
