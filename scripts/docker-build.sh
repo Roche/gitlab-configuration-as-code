@@ -1,7 +1,6 @@
 #!/bin/bash
 
 rc=0
-
 image_name=hoffmannlaroche/gcasc
 
 dockerfile=./Dockerfile

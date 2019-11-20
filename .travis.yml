@@ -11,22 +11,20 @@ git:
 stages:
 - lint
 - test
-#- docker
+- docker
 #- deploy
-#
+
 install: pip install tox-travis
 script: tox
-#
+
 jobs:
   include:
   - stage: lint
-    name: Run flake8 linter
     script: make lint
-  - stage: test
-    script: tox
-#  - stage: docker
-#    name: Build and tag Docker image
-#    script: ".travis/docker_build.sh"
+  - stage: docker
+    name: Build and tag Docker image
+    script: ./scripts/docker-build.sh
+
 #  - stage: deploy
 #    name: Deploy to PyPI
 #    script: skip
