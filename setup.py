@@ -9,9 +9,12 @@ with open("README.md", "r") as readme_file:
 with open("requirements.txt", "r") as reqs_file:
     requirements = reqs_file.readlines()
 
+with open("test-requirements.txt", "r") as test_reqs_file:
+    test_requirements = test_reqs_file.readlines()
+
 setup(
     name="gitlab-configuration-as-code",
-    version="0.1",
+    version="0.1.beta2",
     description="Manage GitLab configuration as code",
     long_description_content_type='text/markdown',
     long_description=readme,
@@ -22,7 +25,8 @@ setup(
     keywords=['gitlab', 'configuration-as-code'],
     packages=find_packages(),
     install_requires=requirements,
-    entry_points={"console_scripts": ["gitlab = bin.gcasc:main"]},
+    tests_require=test_requirements,
+    entry_points={"console_scripts": ["gcasc = bin.gcasc:main"]},
     classifiers=[
         "Development Status :: 4 - Beta",
         "Environment :: Console",
