@@ -1,6 +1,7 @@
-.PHONY: help clean-pyc clean-build isort lint test docker-build
+.PHONY: help clean-pyc clean-build isort lint test build docker-build docker-push
 
-TEST_PATH=./tests
+ENV=py37
+DOCKER_IMAGE_NAME=gcasc
 
 help:
 	@echo "make"
@@ -28,6 +29,14 @@ clean-build:
 	rm -rf dist/
 	rm -rf *.egg-info
 
+install-run-deps:
+	pip3 install --user -r requirements.txt
+
+install-test-deps:
+	pip3 install --user -r test-requirements.txt
+
+install-deps: install-run-deps install-test-deps
+
 clean: clean-pyc clean-build
 
 isort:
@@ -37,12 +46,37 @@ lint:
 	tox -e flake -e black
 
 test: clean-pyc
-	tox -e py37
+	@echo "Running tests on environment: " $(ENV)
+	tox -e $(ENV)
 
 build: clean-build
-	python setup.py bdist_egg
+	python setup.py sdist
+
+publish: build
+ifeq ($(strip $(PYPI_USERNAME)),)
+	@echo "PYPI_USERNAME variable must be provided"
+	exit -1
+endif
+ifeq ($(strip $(PYPI_PASSWORD)),)
+	@echo "PYPI_PASSWORD variable must be provided"
+	exit -1
+endif
+	pip3 install --user twine
+	twine upload dist/* -u $(PYPI_USERNAME) -p $(PYPI_PASSWORD)
 
 docker-build:
 	docker build \
 	  --file=./Dockerfile \
-	  --tag=gcasc ./
+	  --tag=$(DOCKER_IMAGE_NAME) ./
+
+docker-push: docker-build
+ifeq ($(strip $(DOCKER_USERNAME)),)
+	@echo "DOCKER_USERNAME variable must be provided"
+	exit -1
+endif
+ifeq ($(strip $(DOCKER_PASSWORD)),)
+	@echo "DOCKER_PASSWORD variable must be provided"
+	exit -1
+endif
+	docker login -u $(DOCKER_USERNAME) -p $(DOCKER_PASSWORD)
+	docker push $(DOCKER_IMAGE_NAME)
