@@ -1,3 +1,4 @@
+import os
 from pathlib import Path
 
 import gitlab
@@ -38,7 +39,7 @@ class GitlabConfigurationAsCode(object):
         self.mode = Mode[uos.get_env_or_else(GITLAB_MODE, Mode.APPLY.name)]
         if self.mode == Mode.TEST:
             logger.info("TEST MODE ENABLED. NO CHANGES WILL BE APPLIED")
-        path = uos.get_env_or_else(GITLAB_CONFIG_FILE, "gitlab.yml")
+        path = uos.get_env_or_else(GITLAB_CONFIG_FILE, "{0}/gitlab.yml".format(os.getcwd()))
         self.gitlab = init_gitlab_client()
         self.configurers = {}
         self.config = GitlabConfiguration.from_file(path)
