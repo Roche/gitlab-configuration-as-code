@@ -36,6 +36,9 @@ license:
   data: !include gitlab.lic
 ```
 
+**Note:** GCasC supports only Python 3+. Because Python 2.7 end of life is January 1st, 2020 we do not consider support
+for Python 2.
+
 ## Quick start
 
 
@@ -47,11 +50,11 @@ license:
 | `GITLAB_MODE`               | Determine if any changes, when detected, should be applied. Valid values: `APPLY`, `TEST`                                        | `APPLY`                          | `TEST`                          |
 | `GITLAB_CLIENT_API_VERSION` | Version of GitLab API. Current latest: `4`                                                                                       | `4`                              | `4`                             |
 | `GITLAB_CLIENT_CONFIG_FILE` | Path to GitLab client configuration                                                                                              | `/etc/gitlab.cfg, ~/.gitlab.cfg` | `/home/myuser/gitlabclient.cfg` |
-| `GITLAB_CLIENT_URL`         | URL to GitLab instance. Used only if `GITLAB_CLIENT_CONFIG_FILE` not provided or invalid.                                        | `https://gitlab.com`             | https://mygitlab.mydomain.com   |
+| `GITLAB_CLIENT_URL`         | URL to GitLab instance. Used only if `GITLAB_CLIENT_CONFIG_FILE` not provided or invalid.                                        | `https://gitlab.com`             | `https://mygitlab.mydomain.com` |
 | `GITLAB_CLIENT_SSL_VERIFY`  | Flag if SSL certificate of GitLab instance should be verified. Used only if `GITLAB_CLIENT_CONFIG_FILE` not provided or invalid. | `true`                           | `false`                         |
-| `GITLAB_CLIENT_TOKEN`       | **Required**. Private token used to access GitLab API. Used only if `GITLAB_CLIENT_CONFIG_FILE` not provided or invalid.         |                                  |                                 |
-| `GITLAB_CLIENT_CERT`        | Client certificate used for mutual TLS authentication to access GitLab API.                                                      |                                  |                                 |
-| `GITLAB_CLIENT_KEY`         | Client key used for mutual TLS authentication to access GitLab API.                                                              |                                  |                                 |
+| `GITLAB_CLIENT_TOKEN`       | **Required**. Private token used to access GitLab API. Used only if `GITLAB_CLIENT_CONFIG_FILE` not provided or invalid.         |                                  | `-uub91Jax13P1iaLkC3za0`        |
+| `GITLAB_CLIENT_CERT`        | Path to client certificate used for mutual TLS authentication to access GitLab API.                                              |                                  | `/home/myuser/client.crt`       |
+| `GITLAB_CLIENT_KEY`         | Path to client key used for mutual TLS authentication to access GitLab API.                                                      |                                  | `/home/myuser/key.pem`          |
 
 
 ### GitLab Configuration
@@ -64,7 +67,7 @@ https://docs.gitlab.com/12.4/ee/api/settings.html
 
 #### License
 
-**Only for Enterprise Edition. FOSS/Community Edition instane will fail when trying to configure license**
+**Only for Enterprise Edition. FOSS/Community Edition instance will fail when trying to configure license**
 
 GCasC offers a way to manage your GitLab instance licenses. The clue is that despite license is just a single file, 
 you need to configure other properties of license so GCasC do not upload new (but already used) license with every 
@@ -106,7 +109,39 @@ external source. Also keep your license file itself safe and secure!
 #### Authentication
 
 
-### Using Docker image
+### Using _GCasC_ Docker image
+
+#### How to build
+
+```yaml
+make docker-build
+```
+When using make you can additionally pass `DOCKER_IMAGE_NAME` to change default `gcasc:latest` to other image name:
+```bash
+make docker-build DOCKER_IMAGE_NAME=mygcasc:1.0
+```
+
+To get more control over building you can use `docker build` directly:
+```bash
+docker build -t gcasc[:TAG] .
+```
+
+#### How to use
+
+_GCasC_ Docker image working directory is `/workspace`. Thus you can quickly launch `gcasc` with:
+```bash
+docker run -v $(pwd):/workspace hoffmannlaroche/gcasc
+```
+It will try to find both GitLab client configuration and GitLab configuration in `/workspace` directory. You can modify
+the behavior by passing environment variables as defined in TODO anchor here
+
+
+
+Bring your own config file: docker run -it --rm -v /path/to/python-gitlab.cfg:/python-gitlab.cfg -e GITLAB_CFG=/python-gitlab.cfg python-gitlab <command> ...
+Docker image can be use
+`docker run -v $(pwd):/workspace hoffmannlaroche/gcasc`
+`docker run -e GITLAB_CLIENT_CONFIG_FILE=/gitlab/client.cfg -e GITLAB_CONFIG_FILE=/gitlab/config.yml 
+-v $(pwd):/gitlab hoffmannlaroche/gcasc`
 
 
 ### Examples
