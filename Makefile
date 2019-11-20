@@ -50,7 +50,7 @@ test: clean-pyc
 	tox -e $(ENV)
 
 build: clean-build
-	python setup.py sdist
+	python3 setup.py sdist
 
 publish: build
 ifeq ($(strip $(PYPI_USERNAME)),)

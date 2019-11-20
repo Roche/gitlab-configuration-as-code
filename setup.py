@@ -3,7 +3,6 @@
 
 from setuptools import find_packages, setup
 
-
 with open("README.md", "r") as readme_file:
     readme = readme_file.read()
 
@@ -14,6 +13,7 @@ setup(
     name="gitlab-configuration-as-code",
     version="0.1",
     description="Manage GitLab configuration as code",
+    long_description_content_type='text/markdown',
     long_description=readme,
     author="Mateusz Filipowicz",
     author_email="mateusz.filipowicz@roche.com",
