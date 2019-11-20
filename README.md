@@ -1,5 +1,6 @@
 [![Build Status](https://travis-ci.org/Roche/gitlab-configuration-as-code.svg?branch=master)](https://travis-ci.org/Roche/gitlab-configuration-as-code)
-[![Last Docker Pull](https://img.shields.io/docker/pulls/hoffmannlaroche/gcasc)](https://hub.docker.com/r/hoffmannlaroche/gcasc)
+[![Docker Pull count](https://img.shields.io/docker/pulls/hoffmannlaroche/gcasc)](https://hub.docker.com/r/hoffmannlaroche/gcasc)
+[![PyPI](https://img.shields.io/pypi/v/gitlab-configuration-as-code)](https://pypi.org/project/gitlab-configuration-as-code)
 [![Last Commit](https://img.shields.io/github/last-commit/Roche/gitlab-configuration-as-code)]()
 [![Python versions](https://img.shields.io/badge/python-3.6%20%7C%203.7%20%7C%203.8-blue)]()
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue)]()
