@@ -50,7 +50,11 @@ test: clean-pyc
 	tox -e $(ENV)
 
 build: clean-build
-	python3 setup.py bdist_wheel
+	@echo "Building source and binary Wheel distributions..."
+	python3 setup.py sdist bdist_wheel
+	@echo "Building documentation..."
+	mkdir -p build/docs
+	cd docs && $(MAKE) html && mv _build/html/* ../build/docs
 
 publish: build
 ifeq ($(strip $(PYPI_USERNAME)),)
