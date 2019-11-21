@@ -26,7 +26,7 @@ setup(
     packages=find_packages(),
     install_requires=requirements,
     tests_require=test_requirements,
-    entry_points={"console_scripts": ["gcasc = bin.gcasc:main"]},
+    entry_points={"console_scripts": ["gcasc = gcasc.bin.gcasc:main"]},
     classifiers=[
         "Development Status :: 4 - Beta",
         "Environment :: Console",
