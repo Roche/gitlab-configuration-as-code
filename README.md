@@ -74,9 +74,61 @@ Visit [our documentation site](https://gitlab-configuration-as-code.readthedocs.
 GitLab configuration must be defined in Yaml file. You can provide a configuration in a single file, or you can
 split it into multiple Yaml files and inject them.
 
-Visit [our documentation site](https://gitlab-configuration-as-code.readthedocs.io/en/latest/configuration)
+For information how to prepare GitLab configuration Yaml file check [full configuration example](TODO) or visit 
+[our documentation site](https://gitlab-configuration-as-code.readthedocs.io/en/latest/configuration).
 
-`!env`, `!include`
+For `settings` configuration, which defines [Application Settings](https://docs.gitlab.com/12.4/ee/api/settings.html),
+the structure is flexible. For example
+
+```yaml
+settings:
+  elasticsearch:
+    url: http://elasticsearch.mygitlab.com
+    username: elastic_user
+    password: elastic_password
+```
+
+and
+ 
+```yaml
+settings:
+  elasticsearch_url: http://elasticsearch.mygitlab.com
+  elasticsearch_username: elastic_user
+  elasticsearch_password: elastic_password
+```
+
+are exactly the same and match `elasticsearch_url`, `elasticsearch_username` and `elasticsearch_password` settings.
+This means you can flexibly structure your configuration Yaml, where a map child keys are prefixed by parent key (here
+`elasticsearch` parent key was a prefix for `url`, `username` and `password` keys) .
+
+You can adjust your Yamls by splitting them into multiple or injecting environment variables into certain values using
+`!include` or `!env` directives respectively. Example is shown below:
+
+```yaml
+settings:
+  elasticsearch:
+    url: http://elasticsearch.mygitlab.com
+    username: !env ELASTICSEARCH_USERNAME
+    password: !env ELASTICSEARCH_PASSWORD
+  terms: !include tos.md
+
+license: !include license.yml
+```
+
+where:
+
+* `settings.elasticsearch.username` and `settings.elasticsearch.password` are injected from environment variables 
+`ELASTICSEARCH_USERNAME` and `ELASTICSEARCH_PASSWORD` respectively
+
+* `settings.terms` and `license` are injected from `tos.md` plain text file and `license.yml` Yaml file respectively. 
+In this scenario, your `license.yml` may look like this:
+    ```yaml
+    starts_at: 2019-11-17
+    expires_at: 2019-12-17
+    plan: premium
+    user_limit: 30
+    data: !include gitlab.lic
+    ``` 
 
 ### Run GCasC
 
