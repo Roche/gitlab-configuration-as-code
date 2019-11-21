@@ -1,6 +1,7 @@
 [![Build Status](https://travis-ci.org/Roche/gitlab-configuration-as-code.svg?branch=master)](https://travis-ci.org/Roche/gitlab-configuration-as-code)
 [![Docker Pull count](https://img.shields.io/docker/pulls/hoffmannlaroche/gcasc)](https://hub.docker.com/r/hoffmannlaroche/gcasc)
 [![PyPI](https://img.shields.io/pypi/v/gitlab-configuration-as-code)](https://pypi.org/project/gitlab-configuration-as-code)
+[![Documentation Status](https://readthedocs.org/projects/gitlab-configuration-as-code/badge/?version=latest)](https://gitlab-configuration-as-code.readthedocs.io/en/latest/?badge=latest)
 [![Last Commit](https://img.shields.io/github/last-commit/Roche/gitlab-configuration-as-code)]()
 [![Python versions](https://img.shields.io/badge/python-3.6%20%7C%203.7%20%7C%203.8-blue)]()
 [![License](https://img.shields.io/badge/license-Apache%202.0-blue)]()
@@ -8,7 +9,6 @@
 # GitLab Configuration as Code (*GCasC*)
 
 Manage GitLab configuration as code to make it easily manageable, traceable and reproducible.
-
 
 ## Introduction
 
@@ -18,9 +18,21 @@ or [API](https://docs.gitlab.com/12.4/ee/api/settings.html). Due to tons of conf
 you GitLab work as you intend is a complex process.
 
 Our intention is to let you automate things you do through UI in a simple way. The Configuration as Code 
-has been designed to configure GitLab based on human-readable declarative configuration files. 
+has been designed to configure GitLab based on human-readable declarative configuration files written in Yaml. 
 Writing such a file should be feasible without being a GitLab expert, just translating into code a configuration 
 process one is used to executing in the web UI.
+
+_GCasC_ offers a functionality to configure:
+* [application settings](https://gitlab-configuration-as-code.readthedocs.io/en/latest/configuration/application_settings.html)
+* [license](https://gitlab-configuration-as-code.readthedocs.io/en/latest/configuration/license.html)
+* ... more coming soon!
+
+It gives you also a way to:
+* include external files or other Yamls using `!include` directive 
+* inject environment variables into configuration using `!env` directive
+into your Yaml configuration.
+ 
+Visit [our documentation site](https://gitlab-configuration-as-code.readthedocs.io/) for detailed information on how to use.
 
 Configuring your GitLab instance is as simple as this:
 ```yaml
@@ -48,108 +60,71 @@ for Python 2.
 
 ## Quick start
 
+Here you will learn how to quickly start with _GCasC_.
 
-## Usage
+**Important!** Any execution of _GCasC_ may override properties you define in your Yaml files. Don't try it directly
+on your production environment.
 
-| **Environment variable**    | **Description**                                                                                                                  | **Default value**                | **Example**                     |
-|-----------------------------|----------------------------------------------------------------------------------------------------------------------------------|----------------------------------|---------------------------------|
-| `GITLAB_CONFIG_FILE`        | Path to GitLab main configuration. It is our Configuration as Code entry point.                                                  | `./gitlab.yml`                   | `/home/myuser/gitlabconf.yml`   |
-| `GITLAB_MODE`               | Determine if any changes, when detected, should be applied. Valid values: `APPLY`, `TEST`                                        | `APPLY`                          | `TEST`                          |
-| `GITLAB_CLIENT_API_VERSION` | Version of GitLab API. Current latest: `4`                                                                                       | `4`                              | `4`                             |
-| `GITLAB_CLIENT_CONFIG_FILE` | Path to GitLab client configuration                                                                                              | `/etc/gitlab.cfg, ~/.gitlab.cfg` | `/home/myuser/gitlabclient.cfg` |
-| `GITLAB_CLIENT_URL`         | URL to GitLab instance. Used only if `GITLAB_CLIENT_CONFIG_FILE` not provided or invalid.                                        | `https://gitlab.com`             | `https://mygitlab.mydomain.com` |
-| `GITLAB_CLIENT_SSL_VERIFY`  | Flag if SSL certificate of GitLab instance should be verified. Used only if `GITLAB_CLIENT_CONFIG_FILE` not provided or invalid. | `true`                           | `false`                         |
-| `GITLAB_CLIENT_TOKEN`       | **Required**. Private token used to access GitLab API. Used only if `GITLAB_CLIENT_CONFIG_FILE` not provided or invalid.         |                                  | `-uub91Jax13P1iaLkC3za0`        |
-| `GITLAB_CLIENT_CERT`        | Path to client certificate used for mutual TLS authentication to access GitLab API.                                              |                                  | `/home/myuser/client.crt`       |
-| `GITLAB_CLIENT_KEY`         | Path to client key used for mutual TLS authentication to access GitLab API.                                                      |                                  | `/home/myuser/key.pem`          |
+Visit [our documentation site](https://gitlab-configuration-as-code.readthedocs.io/) for detailed information on how to use.
 
+### Configure client
 
-### GitLab Configuration
+### Prepare GitLab configuration
 
-#### Application Settings
+GitLab configuration must be defined in Yaml file. You can provide a configuration in a single file, or you can
+split it into multiple Yaml files and inject them.
 
+Visit [our documentation site](https://gitlab-configuration-as-code.readthedocs.io/en/latest/configuration)
 
-GCasC targets 
-https://docs.gitlab.com/12.4/ee/api/settings.html
+`!env`, `!include`
 
-#### License
+### Run GCasC
 
-**Only for Enterprise Edition. FOSS/Community Edition instance will fail when trying to configure license**
+To run _GCasC_ you can leverage CLI or Docker image. _Docker image is a preferred way_, because it is simple 
+and does not require from you installing any additional libraries. Also Docker image was designed that it can be 
+easily used in your CI/CD pipelines.
 
-GCasC offers a way to manage your GitLab instance licenses. The clue is that despite license is just a single file, 
-you need to configure other properties of license so GCasC do not upload new (but already used) license with every 
-execution. That way it is able to recognize that exactly the same license is already in use and skips uploading new one.
-Otherwise you could end with very long license history.
-
-All license properties are required to be able to configure it. Otherwise GCasC will fail.
-
-| **Property**         | **Description**                                                                      | **Example**             |
-|----------------------|--------------------------------------------------------------------------------------|-------------------------|
-| `license.starts_at`  | Date in format yyyy-MM-dd when license starts                                        | `2019-11-21`            |
-| `license.expires_at` | Date in format yyyy-MM-dd when license ends                                          | `2019-12-21`            |
-| `license.plan`       | Plan of your GitLab instance license. Valid values: `starter`, `premium`, `ultimate` | `premium`               |
-| `license.user_limit` | Number of licensed users                                                             | `120`                   |
-| `license.data`       | Content of your license file that you received from GitLab sales                     | `azhxWFZqb1BsrTVxug...` |
-
-Example license configuration:
-```yaml
-license:
-  starts_at: 2019-11-17
-  expires_at: 2019-12-17
-  plan: premium
-  user_limit: 30
-  data: |
-    azhxWFZqbk1BOUsrTVxug6AdfzIzWXI1WUVsdWNKRk53V2hiV1FlTUN2TTRS
-    NkhSVFFhZ3hCajd4bGlLMkhhcUxhd1EySHh2TjJTXG40U3ZNUWM0ZzhqYTE5
-    T1lcbkJnNERFOVBORkpxK3FsaHZxNFFVSG9GL0NEWWF0elkyOE9SUE41Ny9v
-    WWo0a3JMQXFN91AcxWpjZmV3b1xuU0NsZmM3UTEzZ3VQMVVhNHJaZ2lVOFgr
-    cGNYMFNMU1Y1a0x4UkpNMnhIOWlLZ3NFTzlRYTZIUU4wZlZEXG5Lc0ZrV2Zu
-```
-
-**Important!** Beware of storing your license in `data` field directly as text. This is insecure and may lead
-to leakage of your license. Use `!env` or `!include` directives to inject license to `license.data` field securely from
-external source. Also keep your license file itself safe and secure!
-
-### Client configuration
-
-
-#### Authentication
-
-
-### Using _GCasC_ Docker image
-
-#### How to build
-
-```yaml
-make docker-build
-```
-When using make you can additionally pass `DOCKER_IMAGE_NAME` to change default `gcasc:latest` to other image name:
+When running locally, you may benefit from running _GCasC_ in TEST mode (default mode is `APPLY`), where no changes 
+will be applied, but validation will be performed and differences will be logged. Just set `GITLAB_MODE` 
+environment variable to `TEST`.
 ```bash
-make docker-build DOCKER_IMAGE_NAME=mygcasc:1.0
+export GITLAB_MODE=TEST
 ```
 
-To get more control over building you can use `docker build` directly:
+#### CLI
+
+_GCasC_ library is available in [PyPI](https://pypi.org/project/gitlab-configuration-as-code/).
+
+To install CLI run `pip install gitlab-configuration-as-code`. Then you can simply execute
 ```bash
-docker build -t gcasc[:TAG] .
+gcasc
 ```
 
-#### How to use
+//TODO add more information on CLI usage
+
+Currently CLI is limited and does not support passing any arguments to it, but behavior can only be configured
+using environment variables. Support for CLI arguments may appear in future releases.
+
+#### Docker image
+
+Image is available in [Docker Hub](https://hub.docker.com/r/hoffmannlaroche/gcasc).
 
 _GCasC_ Docker image working directory is `/workspace`. Thus you can quickly launch `gcasc` with:
 ```bash
 docker run -v $(pwd):/workspace hoffmannlaroche/gcasc
 ```
 It will try to find both GitLab client configuration and GitLab configuration in `/workspace` directory. You can modify
-the behavior by passing environment variables as defined in TODO anchor here
+the behavior by passing environment variables:
+* `GITLAB_CLIENT_CONFIG_FILE` to provide path to GitLab client configuration file
+* `GITLAB_CONFIG_FILE` to provide path to GitLab configuration file
 
-
-
-Bring your own config file: docker run -it --rm -v /path/to/python-gitlab.cfg:/python-gitlab.cfg -e GITLAB_CFG=/python-gitlab.cfg python-gitlab <command> ...
-Docker image can be use
-`docker run -v $(pwd):/workspace hoffmannlaroche/gcasc`
+```bash
 `docker run -e GITLAB_CLIENT_CONFIG_FILE=/gitlab/client.cfg -e GITLAB_CONFIG_FILE=/gitlab/config.yml 
 -v $(pwd):/gitlab hoffmannlaroche/gcasc`
+```
 
+You can also configure GitLab client using environment variables. More details about configuration of GitLab client
+are available [in this documentation](https://gitlab-configuration-as-code.readthedocs.io/en/latest/client.html).
 
 ### Examples
 
@@ -160,6 +135,40 @@ We provide few examples to give you a quick starting place to use _GCasC_. They 
 into GitLab configuration file using `!env` directive.
 4. [`modularized`](examples/modularized) shows how you can split single GitLab configuration file into smaller 
 and inject files containing static text using `!include` directive.
+
+## Building
+
+### Docker image
+
+Use `make` to build basic Docker image quickly.
+```bash
+make docker-build
+```
+When using `make` you can additionally pass `DOCKER_IMAGE_NAME` to change default `gcasc:latest` to other image name:
+```bash
+make docker-build DOCKER_IMAGE_NAME=mygcasc:1.0
+```
+
+To get more control over building you can use `docker build` directly:
+```bash
+docker build -t gcasc[:TAG] .
+```
+
+Dockerfile comes with two build arguments you may use to customize your image by providing `--build-arg` parameter
+to `docker build` command:
+* `GCASC_PATH` defines path where _GCasC_ library will be copied. Defaults to `/opt/gcasc`.
+* `WORKSPACE` defines working directory when you run _GCasC_ image. Defaults to `/workspace`.
+
+### Python package
+
+Use `make` to build source distribution (sdist), Wheel binary distribution and Sphinx documentation.
+```bash
+make build
+```
+Both source and Wheel distrubutions will be placed in `dist` directory. Documentation page will be placed 
+in `build/docs` directory.
+
+Remember to run tests before building your distribution!
 
 ## Testing
 
@@ -191,9 +200,6 @@ make test
 # run flake8 linter and black code formatter
 make lint
 ```
-
-## Troubleshooting
-
 
 ## Contribution
 
