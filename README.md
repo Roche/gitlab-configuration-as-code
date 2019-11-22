@@ -4,7 +4,7 @@
 [![Documentation Status](https://readthedocs.org/projects/gitlab-configuration-as-code/badge/?version=latest)](https://gitlab-configuration-as-code.readthedocs.io/en/latest/?badge=latest)
 [![Last Commit](https://img.shields.io/github/last-commit/Roche/gitlab-configuration-as-code)]()
 [![Python versions](https://img.shields.io/badge/python-3.6%20%7C%203.7%20%7C%203.8-blue)]()
-[![License](https://img.shields.io/badge/license-Apache%202.0-blue)]()
+[![License](https://img.shields.io/badge/license-Apache%202.0-blue)](LICENSE)
 
 # GitLab Configuration as Code (*GCasC*)
 
@@ -69,12 +69,51 @@ Visit [our documentation site](https://gitlab-configuration-as-code.readthedocs.
 
 ### Configure client
 
+You can configure client in two ways:
+
+* using configuration file:
+    ```
+    [global]
+    url = https://gitlab.yourdomain.com
+    ssl_verify = true
+    timeout = 5
+    private_token = <personal_access_token>
+    api_version = 4
+    ```
+    By default _GCasC_ is trying to find client configuration file in following paths:
+    ```
+    "/etc/python-gitlab.cfg",
+    "/etc/gitlab.cfg",
+    "~/.python-gitlab.cfg",
+    "~/.gitlab.cfg",
+    ```
+    
+    You can provide a path to your configuration file in `GITLAB_CLIENT_CONFIG_FILE` environment variable.
+
+* using environment variables:
+    ```bash
+    GITLAB_CLIENT_URL=<gitlab_url>  # path to GitLab, default: https://gitlab.com
+    GITLAB_CLIENT_API_VERSION=<gitlab_api_version>  # GitLab API version, default: 4
+    GITLAB_CLIENT_TOKEN=<personal_access_token>  # GitLab personal access token
+    GITLAB_CLIENT_SSL_VERIFY=<ssl_verify>  # Flag if SSL certificate should be verified, default: true
+    ```
+
+Personal access token is mandatory in any client configuration approach and you can configure your it by following 
+[these instructions](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html)
+
+Additionally you can customize HTTP session to enable mutual TLS authentication. To configure this, you should
+provide two additional environment variables:
+```bash
+GITLAB_CLIENT_CONFIG_FILE=<path_to_client_certificate>
+GITLAB_CLIENT_KEY=<path_to_client_key>
+```
+
 ### Prepare GitLab configuration
 
 GitLab configuration must be defined in Yaml file. You can provide a configuration in a single file, or you can
 split it into multiple Yaml files and inject them.
 
-For information how to prepare GitLab configuration Yaml file check [full configuration example](TODO) or visit 
+For information how to prepare GitLab configuration Yaml file visit 
 [our documentation site](https://gitlab-configuration-as-code.readthedocs.io/en/latest/configuration).
 
 For `settings` configuration, which defines [Application Settings](https://docs.gitlab.com/12.4/ee/api/settings.html),
@@ -96,10 +135,10 @@ settings:
   elasticsearch_username: elastic_user
   elasticsearch_password: elastic_password
 ```
-
 are exactly the same and match `elasticsearch_url`, `elasticsearch_username` and `elasticsearch_password` settings.
 This means you can flexibly structure your configuration Yaml, where a map child keys are prefixed by parent key (here
-`elasticsearch` parent key was a prefix for `url`, `username` and `password` keys) .
+`elasticsearch` parent key was a prefix for `url`, `username` and `password` keys). You only need to follow available
+[Application Settings](https://docs.gitlab.com/12.4/ee/api/settings.html).
 
 You can adjust your Yamls by splitting them into multiple or injecting environment variables into certain values using
 `!include` or `!env` directives respectively. Example is shown below:
