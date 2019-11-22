@@ -10,6 +10,23 @@
 
 Manage GitLab configuration as code to make it easily manageable, traceable and reproducible.
 
+### Table of Contents
+
+   * [Introduction](#introduction)
+   * [Quick start](#quick-start)
+      * [Configure client](#configure-client)
+      * [Prepare GitLab configuration](#prepare-gitlab-configuration)
+      * [Run GCasC](#run-gcasc)
+         * [CLI](#cli)
+         * [Docker image](#docker-image)
+      * [Examples](#examples)
+   * [Building](#building)
+      * [Docker image](#docker-image-1)
+      * [Python package](#python-package)
+   * [Testing](#testing)
+   * [Contribution](#contribution)
+   * [License](#license)
+
 ## Introduction
 
 When configuring your GitLab instance, part of settings you put in [Omnibus](https://docs.gitlab.com/12.4/omnibus/settings/README.html) 
