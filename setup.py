@@ -14,7 +14,8 @@ with open("test-requirements.txt", "r") as test_reqs_file:
 
 setup(
     name="gitlab-configuration-as-code",
-    version="0.1.beta2",
+    use_scm_version=True,
+    setup_requires=['setuptools_scm'],
     description="Manage GitLab configuration as code",
     long_description_content_type='text/markdown',
     long_description=readme,
