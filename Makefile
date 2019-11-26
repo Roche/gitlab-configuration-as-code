@@ -1,4 +1,4 @@
-.PHONY: help clean-pyc clean-build isort lint test build docker-build docker-push
+.PHONY: help clean-pyc clean-build isort lint test build docker-build docker-push docs
 
 ENV=py37
 DOCKER_IMAGE_NAME=gcasc
@@ -49,12 +49,16 @@ test: clean-pyc
 	@echo "Running tests on environment: " $(ENV)
 	tox -e $(ENV)
 
-build: clean-build
-	@echo "Building source and binary Wheel distributions..."
-	python3 setup.py sdist bdist_wheel
+docs: clean-build
 	@echo "Building documentation..."
+	pip3 install --user -r rtd-requirements.txt
 	mkdir -p build/docs
 	cd docs && $(MAKE) html && mv _build/html/* ../build/docs
+	@echo "Documentation is available in build/docs directory"
+
+build: clean-build docs
+	@echo "Building source and binary Wheel distributions..."
+	python3 setup.py sdist bdist_wheel
 
 publish: build
 ifeq ($(strip $(PYPI_USERNAME)),)
