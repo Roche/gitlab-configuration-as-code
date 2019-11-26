@@ -6,6 +6,7 @@ Configuration
 
 .. toctree::
     :maxdepth: 1
+
     application_settings
     license
 
