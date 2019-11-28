@@ -3,14 +3,21 @@
 
 from setuptools import find_packages, setup
 
+
+def clean_requirements(requirements):
+    return [req for req in requirements if not req.startswith('-r')]
+
+
 with open("README.md", "r") as readme_file:
     readme = readme_file.read()
 
 with open("requirements.txt", "r") as reqs_file:
     requirements = reqs_file.readlines()
+    requirements = clean_requirements(requirements)
 
 with open("test-requirements.txt", "r") as test_reqs_file:
     test_requirements = test_reqs_file.readlines()
+    test_requirements = clean_requirements(test_requirements)
 
 setup(
     name="gitlab-configuration-as-code",
