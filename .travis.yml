@@ -36,6 +36,8 @@ jobs:
       user: __token__
       password:
         secure: QJkC+4XtGH7ugkxlhwdoF9oizyuOWWaSUBJoZVrXcXTnFF+yVz8rjsHUqECW8Lpb/yniu7fNpXMzlajN0/w87d2susPmJXLLZuHvEBeMcLJClJ9CABmx5UL1+YCvqUeEZtb0dJb5kDp8hPk3zskBVmvaQ2G4T0J+boTC+gYM74dmxqbMfakQ2g+cv0Br9zw5fDGFTj7JneCGxrS3FjhKRDCiHEUoIIz9e/zNDywFTioKUghSwxkkCVjVpA1YzDoXMLWyGUjxILIhzOJVetws0ZKtIcn/7PZH5VvCmqpyyvw3L1/SvvjwhUhYejBEJbhu3JHckDNXXDPYNYrLh7yzmT7lZGyc9NSESCgJH/y3mCml4JrzXMO+CtcAQ81SRqWmLSS8sCw6pkNvo9GPBTHPrDfw7+Tuhh+AAq+1n2M7E9tPzTU//un0T+TZQH6mWUVcdqJh05DrXkv9SxY3moiYrFo5oEKlUlfV1MlFEah1bwsm8TDKZL2bztgxMb3zvREdYJt5UqIFcS6Yx0tbSu82urnZ6kH99cOmHya7YwvGrZTlsXpx/i41ai9U+ACnKG8dHsH9Txz0LuGPpl+osk5BzRXBddol/nhoentaCJey9GC6/k81mPDNFppu0lfNqe9tWsplZuVinw+HeV9zgN9Cbb8bSaH+YvnTk7JQg6ZQSAw=
+      on:
+        tags: true
     if: tag IS present
 
 env:
