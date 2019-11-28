@@ -4,6 +4,7 @@ ARG WORKSPACE=/workspace
 
 WORKDIR ${GCASC_PATH}
 COPY requirements.txt ./
+COPY rtd-requirements.txt ./
 RUN pip --no-cache-dir install -r requirements.txt
 
 COPY gcasc/ ./
