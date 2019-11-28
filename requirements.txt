@@ -1,2 +1,3 @@
+-r rtd-requirements.txt
 python-gitlab>=1.13.0
 PyYAML>=5.1.2

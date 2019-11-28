@@ -31,7 +31,8 @@ Manage GitLab configuration as code to make it easily manageable, traceable and 
 
 When configuring your GitLab instance, part of the settings you put in [Omnibus](https://docs.gitlab.com/12.4/omnibus/settings/README.html) 
 or [Helm Chart](https://docs.gitlab.com/charts/charts/) configuration, and the rest you configure through GitLab UI 
-or [API](https://docs.gitlab.com/12.4/ee/api/settings.html). Due to tons of configuration options in UI, making GitLab work as you intend is a complex process.
+or [API](https://docs.gitlab.com/12.4/ee/api/settings.html). Due to tons of configuration options in UI, 
+making GitLab work as you intend is a complex process.
 
 We intend to let you automate things you do through now UI in a simple way. The Configuration as Code 
 has been designed to configure GitLab based on human-readable declarative configuration files written in Yaml. 

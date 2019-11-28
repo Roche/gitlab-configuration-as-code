@@ -13,6 +13,7 @@
 import os
 # import sys
 # sys.path.insert(0, os.path.abspath('.'))
+from recommonmark.transform import AutoStructify
 
 on_rtd = os.environ.get("READTHEDOCS", None) == "True"
 
@@ -35,7 +36,9 @@ master_doc = "index"
 # ones.
 extensions = [
     "sphinx.ext.autodoc",
-    "sphinx.ext.autosummary"
+    "sphinx.ext.autosummary",
+    "sphinx_markdown_tables",
+    "recommonmark"
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -69,3 +72,11 @@ html_static_path = ['_static']
 pygments_style = "sphinx"
 
 highlight_language = "yaml"
+
+source_suffix = ['.rst', '.md']
+
+def setup(app):
+    app.add_config_value('recommonmark_config', {
+            # 'enable_auto_toc_tree': True,
+            }, True)
+    app.add_transform(AutoStructify)

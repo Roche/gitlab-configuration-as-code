@@ -51,7 +51,7 @@ test: clean-pyc
 
 docs: clean-build
 	@echo "Building documentation..."
-	pip3 install --user -r rtd-requirements.txt
+	pip3 install --user -r requirements.txt
 	mkdir -p build/docs
 	cd docs && $(MAKE) html && mv _build/html/* ../build/docs
 	@echo "Documentation is available in build/docs directory"
