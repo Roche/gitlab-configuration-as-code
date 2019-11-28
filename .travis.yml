@@ -29,6 +29,7 @@ jobs:
       script: ./scripts/docker-push.sh
       on:
         condition: $TRAVIS_BRANCH = master || -n $TRAVIS_TAG
+        tags: true
   - stage: publish
     script: make build
     deploy:
