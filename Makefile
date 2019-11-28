@@ -51,13 +51,15 @@ test: clean-pyc
 
 docs: clean-build
 	@echo "Building documentation..."
-	pip3 install --user -r requirements.txt
+	pip3 install -r requirements.txt
 	mkdir -p build/docs
 	cd docs && $(MAKE) html && mv _build/html/* ../build/docs
 	@echo "Documentation is available in build/docs directory"
 
 build: clean-build docs
 	@echo "Building source and binary Wheel distributions..."
+	pip3 install -r requirements.txt
+	pip3 install wheel
 	python3 setup.py sdist bdist_wheel
 
 publish: build
