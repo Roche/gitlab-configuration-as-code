@@ -108,3 +108,8 @@ include
 *python*
 
 .idea
+
+# secret
+*secret*
+*key
+id_rsa

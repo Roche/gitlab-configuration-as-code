@@ -111,3 +111,8 @@ include
 
 # sphinx documentation
 docs/_build
+
+# secret
+*secret*
+*key
+id_rsa
