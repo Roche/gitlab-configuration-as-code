@@ -1,4 +1,4 @@
-# Reference: https://docs.gitlab.com/12.4/ee/api/settings.html
+# Reference: https://docs.gitlab.com/12.7/ee/api/settings.html
 settings:
   asset_proxy:
     enabled: False
@@ -32,3 +32,7 @@ license:
     bFNWbGE5bXhhWmM5V0Rua1hRPVxuIiwia2V5IjoidmhhWmlEZXJSam9aemdh
     WXExWGFLL2NFVVZwUGY5Wm02VmIvSDh0VSt5MXYrcnZJN2pqSjh2VzhJbXVU
     XG5EN2hmdytPdGltNmZEZHdKa2kyYjZVYUhEczFZcVJISFFGd0tSb0JRZDNX
+
+appearance:
+  title: "Your GitLab instance title"
+  logo: "http://path-to-your-logo/logo.png"

@@ -29,9 +29,9 @@ Manage GitLab configuration as code to make it easily manageable, traceable and 
 
 ## Introduction
 
-When configuring your GitLab instance, part of the settings you put in [Omnibus](https://docs.gitlab.com/12.4/omnibus/settings/README.html) 
+When configuring your GitLab instance, part of the settings you put in [Omnibus](https://docs.gitlab.com/12.7/omnibus/settings/README.html) 
 or [Helm Chart](https://docs.gitlab.com/charts/charts/) configuration, and the rest you configure through GitLab UI 
-or [API](https://docs.gitlab.com/12.4/ee/api/settings.html). Due to tons of configuration options in UI, 
+or [API](https://docs.gitlab.com/12.7/ee/api/settings.html). Due to tons of configuration options in UI, 
 making GitLab work as you intend is a complex process.
 
 We intend to let you automate things you do through now UI in a simple way. The Configuration as Code 
@@ -40,6 +40,7 @@ Writing such a file should be feasible without being a GitLab expert, just trans
 process one is used to executing in the web UI.
 
 _GCasC_ offers a functionality to configure:
+* [appearance](https://gitlab-configuration-as-code.readthedocs.io/en/latest/configuration/appearance.html)
 * [application settings](https://gitlab-configuration-as-code.readthedocs.io/en/latest/configuration/application_settings.html)
 * [license](https://gitlab-configuration-as-code.readthedocs.io/en/latest/configuration/license.html)
 * ... more coming soon!
@@ -53,6 +54,10 @@ Visit [our documentation site](https://gitlab-configuration-as-code.readthedocs.
 
 Configuring your GitLab instance is as simple as this:
 ```yaml
+appearance:
+  title: "Your GitLab instance title"
+  logo: "http://path-to-your-logo/logo.png"
+
 settings:
   elasticsearch:
     url: http://elasticsearch.mygitlab.com
@@ -133,7 +138,7 @@ split it into multiple Yaml files and inject them.
 For information how to prepare GitLab configuration Yaml file visit 
 [our documentation site](https://gitlab-configuration-as-code.readthedocs.io/en/latest/configuration).
 
-For `settings` configuration, which defines [Application Settings](https://docs.gitlab.com/12.4/ee/api/settings.html),
+For `settings` configuration, which defines [Application Settings](https://docs.gitlab.com/12.7/ee/api/settings.html),
 the structure is flexible. For example
 
 ```yaml
@@ -155,7 +160,7 @@ settings:
 are exactly the same and match `elasticsearch_url`, `elasticsearch_username` and `elasticsearch_password` settings.
 This means you can flexibly structure your configuration Yaml, where a map child keys are prefixed by parent key (here
 `elasticsearch` parent key was a prefix for `url`, `username` and `password` keys). You only need to follow available
-[Application Settings](https://docs.gitlab.com/12.4/ee/api/settings.html).
+[Application Settings](https://docs.gitlab.com/12.7/ee/api/settings.html).
 
 You can adjust your Yamls by splitting them into multiple or injecting environment variables into certain values using
 `!include` or `!env` directives respectively. Example is shown below:

@@ -1,11 +1,16 @@
 # Configuration
 
+* [Appearance](../appearance.md)
 * [Application Settings](../application_settings.md)
 * [License](../license.md)
 
 GitLab configuration is defined in a [YAML](https://docs.ansible.com/ansible/latest/reference_appendices/YAMLSyntax.html).
 Providing configuraton for your GitLab instance is as simple as this:
 ```yaml
+appearance:
+  title: "Your GitLab instance title"
+  logo: "http://path-to-your-logo/logo.png"
+
 settings:
   elasticsearch:
     url: http://elasticsearch.mygitlab.com
