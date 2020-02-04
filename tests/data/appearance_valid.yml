@@ -1,0 +1,5 @@
+appearance:
+  title: "GitLab Instance Title"
+  description: "Instance description"
+  header:
+    message: "header message"
