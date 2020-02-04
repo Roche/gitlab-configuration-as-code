@@ -1,4 +1,5 @@
-# Reference: https://docs.gitlab.com/12.4/ee/api/settings.html
+# Reference: https://docs.gitlab.com/12.7/ee/api/settings.html
 
 settings: !include settings/settings.yml
 license: !include license.yml
+appearance: !include appearance.yml
