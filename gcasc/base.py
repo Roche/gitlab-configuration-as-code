@@ -2,6 +2,7 @@ from abc import ABC
 from enum import Enum
 
 from gitlab import Gitlab
+from .utils import logger
 
 
 class Mode(Enum):
@@ -34,6 +35,62 @@ class Configurer(ABC):
             if result and result.has_errors():
                 error = ValidationError.from_validation_result(result)
                 raise error
+
+
+class UpdateOnlyConfigurer(Configurer):
+    def __init__(self, name, gitlab, config, mode=Mode.APPLY):
+        self.name = name
+        self.logger = logger.get_logger(name)
+        super().__init__(gitlab, config, mode=mode)
+
+    def _save(self, data):
+        data.save()
+
+    def _load(self):
+        raise NotImplementedError("")
+
+    def configure(self):
+        self.logger.info("Configuring %s", self.name)
+        data = self._load()
+        changes = self._update_setting(data, self.config)
+        self.logger.info("Found %s changed values", changes)
+        if changes != 0:
+            self.logger.info("Applying changes...")
+            if self.mode == Mode.APPLY:
+                self._save(data)
+            else:
+                self.logger.info("No changes will be applied due to test mode enabled")
+        else:
+            self.logger.info("Nothing to do")
+        return data
+
+    def _update_setting(
+        self, current, new, changes=0, prefix=""
+    ):  # type: (dict, dict, int, str)->int
+        for key, value in new.items():
+            if isinstance(value, dict):
+                changes += self._update_setting(
+                    current, value, changes, "{0}_".format(key)
+                )
+                continue
+
+            if isinstance(value, list):
+                self.logger.warn("List is not supported")
+                continue
+
+            prefixed_key = "{0}{1}".format(prefix, key)
+
+            self.logger.debug("Checking %s", prefixed_key)
+            if hasattr(current, prefixed_key):
+                current_value = getattr(current, prefixed_key)
+                if current_value != value:
+                    changes += 1
+                    self.logger.info("modified: %s.%s", self.name, prefixed_key)
+                    if self.mode == Mode.APPLY:
+                        setattr(current, prefixed_key, value)
+            else:
+                self.logger.warn("Found invalid configuration option: %s", prefixed_key)
+        return changes
 
 
 class ValidationResult(object):

@@ -35,6 +35,11 @@ class GitlabConfiguration(object):
         # type: ()->dict
         return self.__get("license")
 
+    @property
+    def appearance(self):
+        # type: ()->dict
+        return self.__get("appearance")
+
     @staticmethod
     def from_file(path):
         # type: (str)->GitlabConfiguration
