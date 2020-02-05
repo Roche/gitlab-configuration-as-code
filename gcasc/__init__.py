@@ -10,6 +10,7 @@ from .utils import logger as logging
 from .base import Mode
 from .appearance import AppearanceConfigurer
 from .license import LicenseConfigurer
+from .features import FeaturesConfigurer
 from .settings import SettingsConfigurer
 from .config import GitlabConfiguration
 
@@ -54,6 +55,9 @@ class GitlabConfigurationAsCode(object):
         )
         self.configurers["appearance"] = AppearanceConfigurer(
             self.gitlab, self.config.appearance, self.mode
+        )
+        self.configurers["features"] = FeaturesConfigurer(
+            self.gitlab, self.config.features, self.mode
         )
 
         version, revision = self.gitlab.version()

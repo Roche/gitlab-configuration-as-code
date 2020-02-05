@@ -40,6 +40,11 @@ class GitlabConfiguration(object):
         # type: ()->dict
         return self.__get("appearance")
 
+    @property
+    def features(self):
+        # type: ()->dict
+        return self.__get("features")
+
     @staticmethod
     def from_file(path):
         # type: (str)->GitlabConfiguration
