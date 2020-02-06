@@ -7,6 +7,8 @@ logger = logger.get_logger("configurer.features")
 
 
 class FeaturesConfigurer(Configurer):
+    _NAME = "features"
+
     def __init__(
         self, gitlab, features, mode=Mode.APPLY
     ):  # type: (gitlab.Gitlab, dict, Mode)->FeaturesConfigurer

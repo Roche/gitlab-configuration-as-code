@@ -12,9 +12,16 @@ class Mode(Enum):
 
 
 class Configurer(ABC):
+    _NAME = None
+
     def __init__(
         self, gitlab, config, mode=Mode.APPLY
     ):  # type: (Gitlab, dict, Mode)->any
+
+        if not self._NAME:
+            raise RuntimeError("Class property _NAME must be defined! It will be expected "
+                               "to exist in configuration file as a key")
+
         self.gitlab = gitlab
         self.config = config
         self.mode = mode

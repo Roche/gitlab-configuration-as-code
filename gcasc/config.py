@@ -22,28 +22,8 @@ class GitlabConfiguration(object):
 
         self.config = config
 
-    def __get(self, configuration):
+    def get(self, configuration):
         return self.config.get(configuration)
-
-    @property
-    def settings(self):
-        # type: ()->dict
-        return self.__get("settings")
-
-    @property
-    def license(self):
-        # type: ()->dict
-        return self.__get("license")
-
-    @property
-    def appearance(self):
-        # type: ()->dict
-        return self.__get("appearance")
-
-    @property
-    def features(self):
-        # type: ()->dict
-        return self.__get("features")
 
     @staticmethod
     def from_file(path):
