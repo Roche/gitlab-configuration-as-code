@@ -70,12 +70,8 @@ class UpdateOnlyConfigurer(Configurer):
         for key, value in new.items():
             if isinstance(value, dict):
                 changes += self._update_setting(
-                    current, value, changes, "{0}_".format(key)
+                    current, value, changes, "{0}{1}_".format(prefix, key)
                 )
-                continue
-
-            if isinstance(value, list):
-                self.logger.warn("List is not supported")
                 continue
 
             prefixed_key = "{0}{1}".format(prefix, key)
@@ -89,7 +85,7 @@ class UpdateOnlyConfigurer(Configurer):
                     if self.mode == Mode.APPLY:
                         setattr(current, prefixed_key, value)
             else:
-                self.logger.warn("Found invalid configuration option: %s", prefixed_key)
+                self.logger.warn("Invalid configuration option: %s. Skipping...", prefixed_key)
         return changes
 
 

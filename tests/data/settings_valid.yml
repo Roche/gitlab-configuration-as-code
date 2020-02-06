@@ -4,3 +4,9 @@ settings:
     text: 'Custom text displayed on the help page.'
     support_url: 'Alternate support URL for help page and help dropdown.'
   polling_interval_multiplier: 1
+  throttle:
+    unauthenticated:
+      enabled: true
+  allowed_domains:
+    - a
+    - b
