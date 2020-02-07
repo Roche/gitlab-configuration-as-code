@@ -42,6 +42,7 @@ process one is used to executing in the web UI.
 _GCasC_ offers a functionality to configure:
 * [appearance](https://gitlab-configuration-as-code.readthedocs.io/en/latest/configuration/appearance.html)
 * [application settings](https://gitlab-configuration-as-code.readthedocs.io/en/latest/configuration/application_settings.html)
+* [features](https://gitlab-configuration-as-code.readthedocs.io/en/latest/configuration/features.html)
 * [license](https://gitlab-configuration-as-code.readthedocs.io/en/latest/configuration/license.html)
 * ... more coming soon!
 
@@ -68,6 +69,13 @@ settings:
   plantuml:
     enabled: true
     url: 'http://plantuml.url'
+
+features:
+  - name: sourcegraph
+    value: true
+    canaries:
+      - group: mygroup
+      - project: mygroup1/myproject
 
 license:
   starts_at: 2019-11-17

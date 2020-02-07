@@ -2,6 +2,7 @@
 
 * [Appearance](../appearance.md)
 * [Application Settings](../application_settings.md)
+* [Feature Flags](../features.md)
 * [License](../license.md)
 
 GitLab configuration is defined in a [YAML](https://docs.ansible.com/ansible/latest/reference_appendices/YAMLSyntax.html).
@@ -21,6 +22,13 @@ settings:
   plantuml:
     enabled: true
     url: 'http://plantuml.url'
+
+features:
+  - name: sourcegraph
+    value: true
+    canaries:
+      - group: mygroup
+      - project: mygroup1/myproject
 
 license:
   starts_at: 2019-11-17
