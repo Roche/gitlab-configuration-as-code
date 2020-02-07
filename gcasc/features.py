@@ -1,5 +1,4 @@
 from .utils import logger
-import gcasc.utils.validators as validators
 
 from .base import Configurer, Mode, ValidationResult
 
@@ -29,7 +28,6 @@ class FeaturesConfigurer(Configurer):
     def __apply(self, name, value, feature):
         feature_group = feature.get("feature_group")
         canaries = feature.get("canaries")
-        logger.info("Feature: %s=%s", name, value)
         if canaries:
             for canary in canaries:
                 self.gitlab.features.set(
@@ -50,11 +48,12 @@ class FeaturesConfigurer(Configurer):
 
     def validate(self):  # type: () -> ValidationResult
         errors = ValidationResult()
-        # if not self.__get_starts_at():
-        #     errors.add("Feature name must be provided")
-        # if not self.
-        # elif not validators.validate_date(self.__get_starts_at(), "%Y-%m-%d"):
-        #     errors.add(
-        #         "starts_at license property must follow format yyyy-MM-dd, e.g. 2019-03-28"
-        #     )
+        for idx, feature in enumerate(self.config):
+            name = feature.get("name")
+            if not name:
+                errors.add("feature[{0}] must have name property", str(idx))
+            else:
+                name = "{0}.{1}".format(idx, name)
+            if feature.get("value") is None:
+                errors.add("feature[{0}] must have value property", name)
         return errors
