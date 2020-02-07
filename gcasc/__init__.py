@@ -38,12 +38,15 @@ configurers = [
     SettingsConfigurer,
     LicenseConfigurer,
     AppearanceConfigurer,
-    FeaturesConfigurer
+    FeaturesConfigurer,
 ]
 
 
 def create_all_configurers(gitlab, config, mode):
-    return map(lambda configurer: configurer(gitlab, config.get(configurer._NAME), mode), configurers)
+    return map(
+        lambda configurer: configurer(gitlab, config.get(configurer._NAME), mode),
+        configurers,
+    )
 
 
 class GitlabConfigurationAsCode(object):
@@ -57,7 +60,11 @@ class GitlabConfigurationAsCode(object):
         )
         self.gitlab = init_gitlab_client()
         self.config = GitlabConfiguration.from_file(path)
-        self.configurers = configurers if configurers else create_all_configurers(self.gitlab, self.config, self.mode)
+        self.configurers = (
+            configurers
+            if configurers
+            else create_all_configurers(self.gitlab, self.config, self.mode)
+        )
         version, revision = self.gitlab.version()
         logger.info("GitLab version: %s, revision: %s", version, revision)
 
