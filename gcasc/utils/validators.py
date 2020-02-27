@@ -7,3 +7,11 @@ def validate_date(date_text, format="%Y-%m-%d"):
     except ValueError:
         return False
     return True
+
+
+def is_http(text):
+    return True if text.starts_with("http://") else False
+
+
+def is_https(text):
+    return True if text.starts_with("https://") else False
