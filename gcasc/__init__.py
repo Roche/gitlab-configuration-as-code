@@ -93,7 +93,7 @@ def init_gitlab():
         gitlab_id="global", config_files=[config_path]
     ) if config_path is not None else None
 
-    token = getattr(config, 'private_token', uos.get_env_or_else(GITLAB_CLIENT_TOKEN))
+    token = getattr(config, 'private_token', None) or uos.get_env_or_else(GITLAB_CLIENT_TOKEN)
     if token is None:
         raise ClientInitializationError(
             "GitLab token was not provided. It must be defined in {0} environment variable".format(
@@ -101,9 +101,9 @@ def init_gitlab():
             )
         )
 
-    url = getattr(config, 'url', uos.get_env_or_else(GITLAB_CLIENT_URL, "https://gitlab.com"))
-    ssl_verify = getattr(config, 'ssl_verify', uos.get_env_or_else(GITLAB_CLIENT_SSL_VERIFY, True))
-    api_version = getattr(config, 'api_version', uos.get_env_or_else(GITLAB_CLIENT_API_VERSION, "4"))
+    url = getattr(config, 'url', None) or uos.get_env_or_else(GITLAB_CLIENT_URL, "https://gitlab.com")
+    ssl_verify = getattr(config, 'ssl_verify', None) or uos.get_env_or_else(GITLAB_CLIENT_SSL_VERIFY, True)
+    api_version = getattr(config, 'api_version', None) or uos.get_env_or_else(GITLAB_CLIENT_API_VERSION, "4")
 
     return gitlab.Gitlab(
         url=url, private_token=token, ssl_verify=ssl_verify, api_version=api_version
