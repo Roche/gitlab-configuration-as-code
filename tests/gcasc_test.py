@@ -65,7 +65,7 @@ def test_gitlab_client_created_from_config_file(gitlab_class_mock):
 
     # then
     gitlab_class_mock.assert_called_once_with(private_token='my_token', url='https://my.gitlab.com',
-                                              ssl_verify='false', api_version='4')
+                                              ssl_verify=False, api_version='4')
 
 
 @patch('gitlab.Gitlab')
@@ -99,7 +99,7 @@ def test_gitlab_client_created_from_file_and_environment(gitlab_class_mock):
 
     # then
     gitlab_class_mock.assert_called_once_with(private_token='token', url='https://my.gitlab.com',
-                                              ssl_verify='true', api_version='api_version')
+                                              ssl_verify=True, api_version='api_version')
 
 
 def test_gitlab_config_loaded_from_file():
