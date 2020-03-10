@@ -90,7 +90,7 @@ def init_gitlab():
     # type: ()->gitlab.Gitlab
     config_path = __find_gitlab_connection_config_file()
     config = gitlab.config.GitlabConfigParser(
-        gitlab_id=gitlab_id, config_files=[config_path]
+        gitlab_id="global", config_files=[config_path]
     ) if config_path is not None else None
 
     token = getattr(config, 'private_token', uos.get_env_or_else(GITLAB_CLIENT_TOKEN))
@@ -108,6 +108,7 @@ def init_gitlab():
     return gitlab.Gitlab(
         url=url, private_token=token, ssl_verify=ssl_verify, api_version=api_version
     )
+
 
 def init_gitlab_client():
     # type: ()->gitlab.Gitlab
