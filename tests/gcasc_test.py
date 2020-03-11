@@ -64,7 +64,8 @@ def test_gitlab_client_created_from_config_file(gitlab_class_mock):
     GitlabConfigurationAsCode()
 
     # then
-    gitlab_class_mock.from_config.assert_called_once_with("global", [config_path])
+    gitlab_class_mock.assert_called_once_with(private_token='my_token', url='https://my.gitlab.com',
+                                              ssl_verify=False, api_version='4')
 
 
 @patch('gitlab.Gitlab')
@@ -81,6 +82,21 @@ def test_gitlab_client_created_from_environment(gitlab_class_mock):
     # then
     gitlab_class_mock.assert_called_once_with(private_token='token', url='url', ssl_verify='ssl_verify',
                                               api_version='api_version')
+
+@patch('gitlab.Gitlab')
+def test_gitlab_client_created_from_file_and_environment(gitlab_class_mock):
+    # given
+    config_path = helpers.get_file_path('gitlab_config_invalid.cfg')
+    os.environ['GITLAB_CLIENT_CONFIG_FILE'] = config_path
+    os.environ['GITLAB_CLIENT_TOKEN'] = 'token'
+    __mock_gitlab(gitlab_class_mock)
+
+    # when
+    GitlabConfigurationAsCode()
+
+    # then
+    gitlab_class_mock.assert_called_once_with(private_token='token', url='https://my.gitlab.com',
+                                              ssl_verify=True, api_version='4')
 
 
 def test_gitlab_config_loaded_from_file():

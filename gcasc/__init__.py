@@ -86,43 +86,36 @@ class GitlabConfigurationAsCode(object):
                 configurer.configure()
 
 
-def init_gitlab_from_env():
+def init_gitlab():
     # type: ()->gitlab.Gitlab
-    token = uos.get_env_or_else(GITLAB_CLIENT_TOKEN)
+    config_path = __find_gitlab_connection_config_file()
+    config = gitlab.config.GitlabConfigParser(
+        gitlab_id="global", config_files=[config_path]
+    ) if config_path is not None else None
+
+    token = getattr(config, 'private_token', None) or uos.get_env_or_else(GITLAB_CLIENT_TOKEN)
     if token is None:
         raise ClientInitializationError(
-            "GitLab token was not provided. It must be defined in {0} environment variable".format(
+            "GitLab token was not provided. It must be defined in {0} environment variable or config file".format(
                 GITLAB_CLIENT_TOKEN
             )
         )
 
-    url = uos.get_env_or_else(GITLAB_CLIENT_URL, "https://gitlab.com")
-    ssl_verify = uos.get_env_or_else(GITLAB_CLIENT_SSL_VERIFY, True)
-    api_version = uos.get_env_or_else(GITLAB_CLIENT_API_VERSION, "4")
+    url = getattr(config, 'url', None) or uos.get_env_or_else(GITLAB_CLIENT_URL, "https://gitlab.com")
+    # ssl_verify is always set by GitlabConfigParser, using inline if to handle `false` value read from config file
+    ssl_verify = config.ssl_verify if config else uos.get_env_or_else(GITLAB_CLIENT_SSL_VERIFY, True)
+    api_version = getattr(config, 'api_version', None) or uos.get_env_or_else(GITLAB_CLIENT_API_VERSION, "4")
 
     return gitlab.Gitlab(
         url=url, private_token=token, ssl_verify=ssl_verify, api_version=api_version
     )
 
 
-def init_gitlab_from_config_file():
-    # type: ()->gitlab.Gitlab
-    config_path = __find_gitlab_connection_config_file()
-    return (
-        gitlab.Gitlab.from_config("global", [config_path])
-        if config_path is not None
-        else None
-    )
-
-
 def init_gitlab_client():
     # type: ()->gitlab.Gitlab
     logger.info("Initializing GitLab client")
-    logger.info("Trying to initialize GitLab client from configuration file...")
-    client = init_gitlab_from_config_file()
-    if client is None:
-        logger.info("Trying to initialize GitLab client from environment variables...")
-        client = init_gitlab_from_env()
+    logger.info("Trying to initialize GitLab client...")
+    client = init_gitlab()
 
     if client is None:
         raise ClientInitializationError(
