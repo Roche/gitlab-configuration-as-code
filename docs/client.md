@@ -1,11 +1,10 @@
 # Client Configuration
 
-You can configure GitLab client using multiple methods and configuration settings will be searched in the following
-order:
+GCasC uses a very particular configuration source order that is designed to allow sensible overriding of values. Properties are considered in the following order:
 
-* configuration file
-* environment variables (due to limitations in `python-gitlab` if using configuration file only `GITLAB_CLIENT_TOKEN`
-  environment variable will be used)
+1. configuration file
+2. environment variables (due to limitations in `python-gitlab` if using configuration file only `GITLAB_CLIENT_TOKEN`
+   environment variable will be used)
 
 **Important!** GitLab does not allow authentication using API with username and password. The preferred approach
 is to use personal access tokens. For more about it see [getting personal access token](#getting-personal-access-token).

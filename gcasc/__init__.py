@@ -96,7 +96,7 @@ def init_gitlab():
     token = getattr(config, 'private_token', None) or uos.get_env_or_else(GITLAB_CLIENT_TOKEN)
     if token is None:
         raise ClientInitializationError(
-            "GitLab token was not provided. It must be defined in {0} environment variable".format(
+            "GitLab token was not provided. It must be defined in {0} environment variable or config file".format(
                 GITLAB_CLIENT_TOKEN
             )
         )
