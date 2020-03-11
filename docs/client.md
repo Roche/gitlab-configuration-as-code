@@ -4,7 +4,8 @@ You can configure GitLab client using multiple methods and configuration setting
 order:
 
 * configuration file
-* environment variables
+* environment variables (due to limitations in `python-gitlab` if using configuration file only `GITLAB_CLIENT_TOKEN`
+  environment variable will be used)
 
 **Important!** GitLab does not allow authentication using API with username and password. The preferred approach
 is to use personal access tokens. For more about it see [getting personal access token](#getting-personal-access-token).

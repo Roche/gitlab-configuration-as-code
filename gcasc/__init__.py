@@ -102,7 +102,8 @@ def init_gitlab():
         )
 
     url = getattr(config, 'url', None) or uos.get_env_or_else(GITLAB_CLIENT_URL, "https://gitlab.com")
-    ssl_verify = getattr(config, 'ssl_verify', None) or uos.get_env_or_else(GITLAB_CLIENT_SSL_VERIFY, True)
+    # ssl_verify is always set by GitlabConfigParser, using inline if to handle `false` value read from config file
+    ssl_verify = config.ssl_verify if config else uos.get_env_or_else(GITLAB_CLIENT_SSL_VERIFY, True)
     api_version = getattr(config, 'api_version', None) or uos.get_env_or_else(GITLAB_CLIENT_API_VERSION, "4")
 
     return gitlab.Gitlab(

@@ -123,7 +123,8 @@ You can configure client in two ways:
 You can combine both methods and configuration settings will be searched in the following order:
 
 * configuration file
-* environment variables
+* environment variables (due to limitations in `python-gitlab` if using configuration file only `GITLAB_CLIENT_TOKEN`
+  environment variable will be used)
 
 Personal access token is mandatory in any client configuration approach and you can configure your it by following
 [these instructions](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html)

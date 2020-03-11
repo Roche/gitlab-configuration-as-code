@@ -89,9 +89,6 @@ def test_gitlab_client_created_from_file_and_environment(gitlab_class_mock):
     config_path = helpers.get_file_path('gitlab_config_invalid.cfg')
     os.environ['GITLAB_CLIENT_CONFIG_FILE'] = config_path
     os.environ['GITLAB_CLIENT_TOKEN'] = 'token'
-    os.environ['GITLAB_CLIENT_URL'] = 'url'
-    os.environ['GITLAB_CLIENT_API_VERSION'] = 'api_version'
-    os.environ['GITLAB_CLIENT_SSL_VERIFY'] = 'ssl_verify'
     __mock_gitlab(gitlab_class_mock)
 
     # when
@@ -99,7 +96,7 @@ def test_gitlab_client_created_from_file_and_environment(gitlab_class_mock):
 
     # then
     gitlab_class_mock.assert_called_once_with(private_token='token', url='https://my.gitlab.com',
-                                              ssl_verify=True, api_version='api_version')
+                                              ssl_verify=True, api_version='4')
 
 
 def test_gitlab_config_loaded_from_file():
