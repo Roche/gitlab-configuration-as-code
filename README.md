@@ -29,14 +29,14 @@ Manage GitLab configuration as code to make it easily manageable, traceable and 
 
 ## Introduction
 
-When configuring your GitLab instance, part of the settings you put in [Omnibus](https://docs.gitlab.com/12.7/omnibus/settings/README.html) 
-or [Helm Chart](https://docs.gitlab.com/charts/charts/) configuration, and the rest you configure through GitLab UI 
-or [API](https://docs.gitlab.com/12.7/ee/api/settings.html). Due to tons of configuration options in UI, 
+When configuring your GitLab instance, part of the settings you put in [Omnibus](https://docs.gitlab.com/12.7/omnibus/settings/README.html)
+or [Helm Chart](https://docs.gitlab.com/charts/charts/) configuration, and the rest you configure through GitLab UI
+or [API](https://docs.gitlab.com/12.7/ee/api/settings.html). Due to tons of configuration options in UI,
 making GitLab work as you intend is a complex process.
 
-We intend to let you automate things you do through now UI in a simple way. The Configuration as Code 
-has been designed to configure GitLab based on human-readable declarative configuration files written in Yaml. 
-Writing such a file should be feasible without being a GitLab expert, just translating into code a configuration 
+We intend to let you automate things you do through now UI in a simple way. The Configuration as Code
+has been designed to configure GitLab based on human-readable declarative configuration files written in Yaml.
+Writing such a file should be feasible without being a GitLab expert, just translating into code a configuration
 process one is used to executing in the web UI.
 
 _GCasC_ offers a functionality to configure:
@@ -47,7 +47,7 @@ _GCasC_ offers a functionality to configure:
 * ... more coming soon!
 
 It gives you also a way to:
-* include external files or other Yamls using `!include` directive 
+* include external files or other Yamls using `!include` directive
 * inject environment variables into configuration using `!env` directive
 into your Yaml configuration.
  
@@ -119,7 +119,7 @@ You can configure client in two ways:
     ```
  
     You can provide a path to your configuration file in `GITLAB_CLIENT_CONFIG_FILE` environment variable.
-    
+
 * using environment variables:
     ```bash
     GITLAB_CLIENT_URL=<gitlab_url> # path to GitLab, default: https://gitlab.com
@@ -128,7 +128,13 @@ You can configure client in two ways:
     GITLAB_CLIENT_SSL_VERIFY=<ssl_verify> # Flag if SSL certificate should be verified, default: true
     ```
 
-Personal access token is mandatory in any client configuration approach and you can configure your it by following 
+You can combine both methods and configuration settings will be searched in the following order:
+
+* configuration file
+* environment variables (due to limitations in `python-gitlab` if using configuration file only `GITLAB_CLIENT_TOKEN`
+  environment variable will be used)
+
+Personal access token is mandatory in any client configuration approach and you can configure your it by following
 [these instructions](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html)
 
 Additionally you can customize HTTP session to enable mutual TLS authentication. To configure this, you should
@@ -143,7 +149,7 @@ GITLAB_CLIENT_KEY=<path_to_client_key>
 GitLab configuration must be defined in Yaml file. You can provide a configuration in a single file, or you can
 split it into multiple Yaml files and inject them.
 
-For information how to prepare GitLab configuration Yaml file visit 
+For information how to prepare GitLab configuration Yaml file visit
 [our documentation site](https://gitlab-configuration-as-code.readthedocs.io/en/latest/configuration).
 
 For `settings` configuration, which defines [Application Settings](https://docs.gitlab.com/12.7/ee/api/settings.html),
@@ -186,10 +192,10 @@ license: !include license.yml
 
 where:
 
-* `settings.elasticsearch.username` and `settings.elasticsearch.password` are injected from environment variables 
+* `settings.elasticsearch.username` and `settings.elasticsearch.password` are injected from environment variables
 `ELASTICSEARCH_USERNAME` and `ELASTICSEARCH_PASSWORD` respectively
 
-* `settings.terms` and `license` are injected from `tos.md` plain text file and `license.yml` Yaml file respectively. 
+* `settings.terms` and `license` are injected from `tos.md` plain text file and `license.yml` Yaml file respectively.
 In this scenario, your `license.yml` may look like this:
 ```yaml
 starts_at: 2019-11-17
@@ -197,16 +203,16 @@ expires_at: 2019-12-17
 plan: premium
 user_limit: 30
 data: !include gitlab.lic
-``` 
+```
 
 ### Run GCasC
 
-To run _GCasC_ you can leverage CLI or Docker image. _Docker image is a preferred way_, because it is simple 
-and does not require from you installing any additional libraries. Also, Docker image was designed that it can be 
+To run _GCasC_ you can leverage CLI or Docker image. _Docker image is a preferred way_, because it is simple
+and does not require from you installing any additional libraries. Also, Docker image was designed that it can be
 easily used in your CI/CD pipelines.
 
-When running locally, you may benefit from running _GCasC_ in TEST mode (default mode is `APPLY`), where no changes 
-will be applied, but validation will be performed and differences will be logged. Just set `GITLAB_MODE` 
+When running locally, you may benefit from running _GCasC_ in TEST mode (default mode is `APPLY`), where no changes
+will be applied, but validation will be performed and differences will be logged. Just set `GITLAB_MODE`
 environment variable to `TEST`.
 ```bash
 export GITLAB_MODE=TEST
@@ -240,7 +246,7 @@ the behavior by passing environment variables:
 * `GITLAB_CONFIG_FILE` to provide a path to GitLab configuration file
 
 ```bash
-docker run -e GITLAB_CLIENT_CONFIG_FILE=/gitlab/client.cfg -e GITLAB_CONFIG_FILE=/gitlab/config.yml 
+docker run -e GITLAB_CLIENT_CONFIG_FILE=/gitlab/client.cfg -e GITLAB_CONFIG_FILE=/gitlab/config.yml
 -v $(pwd):/gitlab hoffmannlaroche/gcasc
 ```
 
@@ -252,9 +258,9 @@ are available [in this documentation](https://gitlab-configuration-as-code.readt
 We provide a few examples to give you a quick starting place to use _GCasC_. They can be found in [`examples`](examples) directory.
 1. [`gitlab.cfg`](examples/gitlab.cfg) is example GitLab client file configuration.
 2. [`basic`](examples/basic/gitlab.yml) is an example GitLab configuration using a single configuration file.
-3. [`environment_variables`](examples/environment_variables) shows how environment variables can be injected 
+3. [`environment_variables`](examples/environment_variables) shows how environment variables can be injected
 into GitLab configuration file using `!env` directive.
-4. [`modularized`](examples/modularized) shows how you can split single GitLab configuration file into smaller 
+4. [`modularized`](examples/modularized) shows how you can split single GitLab configuration file into smaller
 and inject files containing static text using `!include` directive.
 
 ## Building
@@ -286,15 +292,15 @@ Use `make` to build source distribution (sdist), Wheel binary distribution and S
 ```bash
 make build
 ```
-Both source and Wheel distributions will be placed in `dist` directory. Documentation page will be placed 
+Both source and Wheel distributions will be placed in `dist` directory. Documentation page will be placed
 in `build/docs` directory.
 
 Remember to run tests before building your distribution!
 
 ## Testing
 
-Before submitting a pull request make sure that the tests still succeed with your change. 
-Unit tests run using Github Actions and passing tests are mandatory 
+Before submitting a pull request make sure that the tests still succeed with your change.
+Unit tests run using Github Actions and passing tests are mandatory
 to get merge requests accepted.
 
 You need to install `tox` to run unit tests locally:
@@ -326,7 +332,7 @@ make lint
 
 Everyone is warm welcome to contribute!
 
-Please make sure to read the [Contributing Guide](CONTRIBUTING.md) and [Code of Conduct](CODE_OF_CONDUCT.md) 
+Please make sure to read the [Contributing Guide](CONTRIBUTING.md) and [Code of Conduct](CODE_OF_CONDUCT.md)
 before making a pull request.
 
 ## License
