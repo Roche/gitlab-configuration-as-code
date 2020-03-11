@@ -1,0 +1,7 @@
+features:
+  - name: sourcegraph
+    value: false
+  - name: import_export_object_storage
+    value: true
+  - name: ci_enable_live_trace
+    value: true

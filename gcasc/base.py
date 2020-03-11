@@ -12,9 +12,18 @@ class Mode(Enum):
 
 
 class Configurer(ABC):
+    _NAME = None
+
     def __init__(
         self, gitlab, config, mode=Mode.APPLY
     ):  # type: (Gitlab, dict, Mode)->any
+
+        if not self._NAME:
+            raise RuntimeError(
+                "Class property _NAME must be defined! It will be expected "
+                "to exist in configuration file as a key"
+            )
+
         self.gitlab = gitlab
         self.config = config
         self.mode = mode
@@ -26,6 +35,9 @@ class Configurer(ABC):
 
     def validate(self):  # type: () -> ValidationResult
         pass
+
+    def _get(self, property):
+        return self.config.get(property)
 
     def _validate(self):
         if self.gitlab is None:
@@ -85,7 +97,9 @@ class UpdateOnlyConfigurer(Configurer):
                     if self.mode == Mode.APPLY:
                         setattr(current, prefixed_key, value)
             else:
-                self.logger.warn("Invalid configuration option: %s. Skipping...", prefixed_key)
+                self.logger.warn(
+                    "Invalid configuration option: %s. Skipping...", prefixed_key
+                )
         return changes
 
 

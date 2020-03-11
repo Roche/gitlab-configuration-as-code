@@ -10,6 +10,7 @@ from .utils import logger as logging
 from .base import Mode
 from .appearance import AppearanceConfigurer
 from .license import LicenseConfigurer
+from .features import FeaturesConfigurer
 from .settings import SettingsConfigurer
 from .config import GitlabConfiguration
 
@@ -33,9 +34,23 @@ GITLAB_MODE = "GITLAB_MODE"
 
 logger = logging.get_logger()
 
+configurers = [
+    SettingsConfigurer,
+    LicenseConfigurer,
+    AppearanceConfigurer,
+    FeaturesConfigurer,
+]
+
+
+def create_all_configurers(gitlab, config, mode):
+    return map(
+        lambda configurer: configurer(gitlab, config.get(configurer._NAME), mode),
+        configurers,
+    )
+
 
 class GitlabConfigurationAsCode(object):
-    def __init__(self):
+    def __init__(self, configurers=None):
         # type: ()->GitlabConfigurationAsCode
         self.mode = Mode[uos.get_env_or_else(GITLAB_MODE, Mode.APPLY.name)]
         if self.mode == Mode.TEST:
@@ -44,39 +59,18 @@ class GitlabConfigurationAsCode(object):
             GITLAB_CONFIG_FILE, "{0}/gitlab.yml".format(os.getcwd())
         )
         self.gitlab = init_gitlab_client()
-        self.configurers = {}
         self.config = GitlabConfiguration.from_file(path)
-        self.configurers["settings"] = SettingsConfigurer(
-            self.gitlab, self.config.settings, self.mode
+        self.configurers = (
+            configurers
+            if configurers
+            else create_all_configurers(self.gitlab, self.config, self.mode)
         )
-        self.configurers["license"] = LicenseConfigurer(
-            self.gitlab, self.config.license, self.mode
-        )
-        self.configurers["appearance"] = AppearanceConfigurer(
-            self.gitlab, self.config.appearance, self.mode
-        )
-
         version, revision = self.gitlab.version()
         logger.info("GitLab version: %s, revision: %s", version, revision)
 
-    @property
-    def settings(self):
-        # type: ()->SettingsConfigurer
-        return self.configurers["settings"]
-
-    @property
-    def license(self):
-        # type: ()->LicenseConfigurer
-        return self.configurers["license"]
-
-    @property
-    def appearance(self):
-        # type: ()->AppearanceConfigurer
-        return self.configurers["appearance"]
-
     def configure(self, target=None):
         if target is None:
-            for name, configurer in self.configurers.items():
+            for configurer in self.configurers:
                 if configurer.config is None:
                     logger.info(
                         "Skipping configurer %s because it does not have any configuration to apply",

@@ -9,6 +9,8 @@ logger = logger.get_logger("configurer.license")
 
 
 class LicenseConfigurer(Configurer):
+    _NAME = "license"
+
     def __init__(
         self, gitlab, license, mode=Mode.APPLY
     ):  # type: (gitlab.Gitlab, dict, Mode)->LicenseConfigurer
