@@ -67,6 +67,7 @@ class UpdateOnlyConfigurer(Configurer):
         changes = self._update_setting(data, self.config)
         self.logger.info("Found %s changed values", changes)
         if changes != 0:
+
             self.logger.info("Applying changes...")
             if self.mode == Mode.APPLY:
                 self._save(data)
@@ -93,7 +94,14 @@ class UpdateOnlyConfigurer(Configurer):
                 current_value = getattr(current, prefixed_key)
                 if current_value != value:
                     changes += 1
-                    self.logger.info("modified: %s.%s", self.name, prefixed_key)
+                    if current_value is None:
+                        self.logger.info("Set: %s = %s", prefixed_key, value)
+                    elif value is None:
+                        self.logger.info("Unset: %s = %s", prefixed_key, current_value)
+                    else:
+                        self.logger.info(
+                            "Updated %s: %s => %s", prefixed_key, current_value, value
+                        )
                     if self.mode == Mode.APPLY:
                         setattr(current, prefixed_key, value)
             else:
