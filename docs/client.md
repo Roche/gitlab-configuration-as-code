@@ -1,8 +1,10 @@
 # Client Configuration
 
-You can configure GitLab client in one of two ways:
-* using configuration file
-* using environment variables
+GCasC uses a very particular configuration source order that is designed to allow sensible overriding of values. Properties are considered in the following order:
+
+1. configuration file
+2. environment variables (due to limitations in `python-gitlab` if using configuration file only `GITLAB_CLIENT_TOKEN`
+   environment variable will be used)
 
 **Important!** GitLab does not allow authentication using API with username and password. The preferred approach
 is to use personal access tokens. For more about it see [getting personal access token](#getting-personal-access-token).
@@ -43,7 +45,7 @@ You can use set up environment variables to configure your API client:
 
 ## Getting personal access token
 
-You **must** have personal access token if you want to use _GCasC_. Personal access token is mandatory in any client 
+You **must** have personal access token if you want to use _GCasC_. Personal access token is mandatory in any client
 configuration approach. Unfortunately there is no way to configure it via API or get it automatically on instance setup.
 Thus you must first have GitLab running (for fresh deploys), then go to the UI and follow
 [these instructions](https://docs.gitlab.com/ee/user/profile/personal_access_tokens.html) to get personal access token.
