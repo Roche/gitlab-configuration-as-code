@@ -2,7 +2,7 @@ from .utils import logger
 
 from .base import Configurer, Mode, ValidationResult
 
-logger = logger.get_logger("configurer.features")
+logger = logger.get_logger("Features")
 
 
 class FeaturesConfigurer(Configurer):
@@ -20,9 +20,9 @@ class FeaturesConfigurer(Configurer):
         for feature in self.config:
             name = feature["name"]
             value = feature["value"]
-            logger.info("Feature: %s=%s", name, value)
             if self.mode == Mode.APPLY:
                 self.__apply(name, value, feature)
+            logger.info("Configured: %s => %s", name, value)
         return self.gitlab.features.list()
 
     def __apply(self, name, value, feature):
