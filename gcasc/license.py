@@ -5,7 +5,7 @@ import gcasc.utils.validators as validators
 
 from .base import Configurer, Mode, ValidationResult
 
-logger = logger.get_logger("configurer.license")
+logger = logger.get_logger("License")
 
 
 class LicenseConfigurer(Configurer):
