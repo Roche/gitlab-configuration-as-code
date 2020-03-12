@@ -21,30 +21,33 @@ features: [list]
   - name: [string]
     value: [bool/int]
     feature_group: [string|optional]
-    canaries: [list|optional]
-      - user: [string|optional]
-        group: [string|optional]
-        project: [string|optional]
+    groups: [list(string)|optional]
+    projects: [list(string)|optional]
+    users: [list(string)|optional]
 ```
 
-To configure certain feature for a limited set of users, you can specify 
-`canaries`. It allows configuring features per user, group or project.
+To configure certain feature for a limited set of:
+- users, by specifying `users` by their username. 
+- groups, by specifying `groups` by group short name. 
+- projects, by specifying `groups` with format `group_name/project_name`. 
 
 Example of complex features configuration:
 ```yaml
 features:
   - name: some_percentage_feature
     value: 25
-    canaries: 
-      - user: user1
-      - user: user2
+    users:
+      - user1
+      - user2
   - name: some_percentage_feature
     value: 50
-    canaries: 
-      - user: myuser
-        group: mygroup
-        project: mygroup1/myproject
-      - project: mygroup1/myproject2
+    users:
+      - myuser
+    groups:
+      - mygroup
+    projects:
+      - mygroup1/myproject
+      - mygroup1/myproject2
 ```
 
 It will configure `some_percentage_feature` with value `25` for users

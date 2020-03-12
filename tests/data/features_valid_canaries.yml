@@ -1,6 +1,9 @@
 features:
   - name: sourcegraph
     value: true
-    canaries:
-      - project: mygroup/myproject
-      - user: testuser
+    projects:
+      - group1/project1
+      - group2/project2
+    users:
+      - user1
+      - user2

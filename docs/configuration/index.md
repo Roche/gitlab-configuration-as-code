@@ -26,9 +26,12 @@ settings:
 features:
   - name: sourcegraph
     value: true
-    canaries:
-      - group: mygroup
-      - project: mygroup1/myproject
+    groups:
+      - mygroup1
+    projects:
+      - mygroup2/myproject
+    users:
+      - myuser
 
 license:
   starts_at: 2019-11-17

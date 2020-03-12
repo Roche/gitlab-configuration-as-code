@@ -25,20 +25,34 @@ class FeaturesConfigurer(Configurer):
             logger.info("Configured: %s => %s", name, value)
         return self.gitlab.features.list()
 
+    def __set_canary(
+        self, canary_name, canaries, feature_name, feature_value, feature_group
+    ):
+        if canaries:
+            for canary_value in canaries:
+                logger.info("Configuring canary: %s => %s", canary_name, canary_value)
+                self.gitlab.features.set(
+                    feature_name,
+                    feature_value,
+                    feature_group=feature_group,
+                    **{canary_name: canary_value}
+                )
+            return True
+        return False
+
     def __apply(self, name, value, feature):
         feature_group = feature.get("feature_group")
-        canaries = feature.get("canaries")
-        if canaries:
-            for canary in canaries:
-                self.gitlab.features.set(
-                    name,
-                    value,
-                    feature_group=feature_group,
-                    user=canary.get("user"),
-                    group=canary.get("group"),
-                    project=canary.get("project"),
-                )
-        else:
+        users = feature.get("users")
+        is_set = self.__set_canary("user", users, name, value, feature_group)
+        groups = feature.get("groups")
+        is_set = (
+            self.__set_canary("group", groups, name, value, feature_group) or is_set
+        )
+        projects = feature.get("projects")
+        is_set = (
+            self.__set_canary("project", projects, name, value, feature_group) or is_set
+        )
+        if not is_set:  # set feature globally
             self.gitlab.features.set(name, value, feature_group=feature_group)
 
     def __remove_existing(self):

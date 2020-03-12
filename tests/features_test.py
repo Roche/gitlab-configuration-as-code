@@ -76,7 +76,11 @@ def test_existing_features_removed_before_applying():
 def test_canaries_configured_when_in_config(features_valid_canary):
     # given
     feature = features_valid_canary[0]
-    canary = feature["canaries"][0]
+    name = feature["name"]
+    value = feature["value"]
+    user = feature["users"][0]
+    group = feature["groups"][0]
+    project = feature["projects"][0]
     gitlab = __mock_gitlab()
     configurer = FeaturesConfigurer(gitlab, features_valid_canary)
 
@@ -84,12 +88,20 @@ def test_canaries_configured_when_in_config(features_valid_canary):
     configurer.configure()
 
     # then
-    gitlab.features.set.assert_called_once_with(feature["name"],
-                                                feature["value"],
-                                                feature_group=None,
-                                                user=canary["user"],
-                                                group=None,
-                                                project=canary["project"])
+    gitlab.features.set.assert_any_call(name,
+                                        value,
+                                        feature_group=None,
+                                        user=user)
+
+    gitlab.features.set.assert_any_call(name,
+                                        value,
+                                        feature_group=None,
+                                        group=group)
+
+    gitlab.features.set.assert_any_call(name,
+                                        value,
+                                        feature_group=None,
+                                        project=project)
 
 
 def test_multiple_canaries_are_configured(features_valid_canaries):
@@ -101,7 +113,7 @@ def test_multiple_canaries_are_configured(features_valid_canaries):
     configurer.configure()
 
     # then
-    assert gitlab.features.set.call_count == 2
+    assert gitlab.features.set.call_count == 4
 
 
 @mark.parametrize('mode', [Mode.TEST, Mode.TEST_SKIP_VALIDATION])
