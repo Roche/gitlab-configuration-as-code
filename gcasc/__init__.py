@@ -83,11 +83,15 @@ class GitlabConfigurationAsCode(object):
 def init_gitlab():
     # type: ()->gitlab.Gitlab
     config_path = __find_gitlab_connection_config_file()
-    config = gitlab.config.GitlabConfigParser(
-        gitlab_id="global", config_files=[config_path]
-    ) if config_path is not None else None
+    config = (
+        gitlab.config.GitlabConfigParser(gitlab_id="global", config_files=[config_path])
+        if config_path is not None
+        else None
+    )
 
-    token = getattr(config, 'private_token', None) or uos.get_env_or_else(GITLAB_CLIENT_TOKEN)
+    token = getattr(config, "private_token", None) or uos.get_env_or_else(
+        GITLAB_CLIENT_TOKEN
+    )
     if token is None:
         raise ClientInitializationError(
             "GitLab token was not provided. It must be defined in {0} environment variable or config file".format(
@@ -95,10 +99,18 @@ def init_gitlab():
             )
         )
 
-    url = getattr(config, 'url', None) or uos.get_env_or_else(GITLAB_CLIENT_URL, "https://gitlab.com")
+    url = getattr(config, "url", None) or uos.get_env_or_else(
+        GITLAB_CLIENT_URL, "https://gitlab.com"
+    )
     # ssl_verify is always set by GitlabConfigParser, using inline if to handle `false` value read from config file
-    ssl_verify = config.ssl_verify if config else uos.get_env_or_else(GITLAB_CLIENT_SSL_VERIFY, True)
-    api_version = getattr(config, 'api_version', None) or uos.get_env_or_else(GITLAB_CLIENT_API_VERSION, "4")
+    ssl_verify = (
+        config.ssl_verify
+        if config
+        else uos.get_env_or_else(GITLAB_CLIENT_SSL_VERIFY, True)
+    )
+    api_version = getattr(config, "api_version", None) or uos.get_env_or_else(
+        GITLAB_CLIENT_API_VERSION, "4"
+    )
 
     return gitlab.Gitlab(
         url=url, private_token=token, ssl_verify=ssl_verify, api_version=api_version

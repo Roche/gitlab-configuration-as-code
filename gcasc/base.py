@@ -99,7 +99,9 @@ class UpdateOnlyConfigurer(Configurer):
                     elif value is None:
                         self.logger.info("Unset: %s = %s", prefixed_key, current_value)
                     else:
-                        self.logger.info("Updated %s: %s => %s", prefixed_key, current_value, value)
+                        self.logger.info(
+                            "Updated %s: %s => %s", prefixed_key, current_value, value
+                        )
                     if self.mode == Mode.APPLY:
                         setattr(current, prefixed_key, value)
             else:
