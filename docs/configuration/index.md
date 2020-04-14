@@ -61,6 +61,8 @@ under certain key, e.g.
       terms: !include toc.md
       elasticsearch: !include config/elasticsearch.yml
     ```
+  It searches for relative paths in current working directory tree AND in directory tree where GitLab
+  configuration file is present.
   
 * `!env` to inject values of environment variables under certain key, e.g.
     ```yaml
