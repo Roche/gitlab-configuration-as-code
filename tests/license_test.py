@@ -8,12 +8,12 @@ from .helpers import read_yaml
 
 @pytest.fixture()
 def license_valid():
-    return read_yaml('license_valid.yml')['license']
+    return read_yaml("license_valid.yml")["license"]
 
 
 @pytest.fixture()
 def license_invalid():
-    return read_yaml('license_invalid_1.yml')['license']
+    return read_yaml("license_invalid_1.yml")["license"]
 
 
 def test_license_configuration_valid(license_valid):
@@ -37,21 +37,21 @@ def test_license_configuration_invalid(license_invalid):
     # then
     assert result.has_errors()
     assert result.errors.__len__() == 5
-    assert result.has_error('starts_at')
-    assert result.has_error('expires_at')
-    assert result.has_error('plan')
-    assert result.has_error('user_limit')
-    assert result.has_error('data')
+    assert result.has_error("starts_at")
+    assert result.has_error("expires_at")
+    assert result.has_error("plan")
+    assert result.has_error("user_limit")
+    assert result.has_error("data")
 
 
 def test_license_not_updated_because_same_exists(license_valid):
     # given
     gitlab = Mock()
     gitlab.get_license.return_value = {
-        'starts_at': license_valid['starts_at'],
-        'expires_at': license_valid['expires_at'],
-        'plan': license_valid['plan'],
-        'user_limit': license_valid['user_limit'],
+        "starts_at": license_valid["starts_at"],
+        "expires_at": license_valid["expires_at"],
+        "plan": license_valid["plan"],
+        "user_limit": license_valid["user_limit"],
     }
     configurer = LicenseConfigurer(gitlab, license_valid)
 
@@ -67,10 +67,10 @@ def test_license_updated(license_valid):
     # given
     gitlab = Mock()
     gitlab.get_license.return_value = {
-        'starts_at': '1900-01-01',
-        'expires_at': license_valid['expires_at'],
-        'plan': license_valid['plan'],
-        'user_limit': license_valid['user_limit'],
+        "starts_at": "1900-01-01",
+        "expires_at": license_valid["expires_at"],
+        "plan": license_valid["plan"],
+        "user_limit": license_valid["user_limit"],
     }
     configurer = LicenseConfigurer(gitlab, license_valid)
 
@@ -79,6 +79,4 @@ def test_license_updated(license_valid):
 
     # then
     gitlab.get_license.assert_called_once()
-    gitlab.set_license.assert_called_once_with(license_valid['data'])
-
-
+    gitlab.set_license.assert_called_once_with(license_valid["data"])

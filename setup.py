@@ -5,7 +5,7 @@ from setuptools import find_packages, setup
 
 
 def clean_requirements(requirements):
-    return [req for req in requirements if not req.startswith('-r')]
+    return [req for req in requirements if not req.startswith("-r")]
 
 
 with open("README.md", "r") as readme_file:
@@ -22,15 +22,15 @@ with open("test-requirements.txt", "r") as test_reqs_file:
 setup(
     name="gitlab-configuration-as-code",
     use_scm_version=True,
-    setup_requires=['setuptools_scm'],
+    setup_requires=["setuptools_scm"],
     description="Manage GitLab configuration as code",
-    long_description_content_type='text/markdown',
+    long_description_content_type="text/markdown",
     long_description=readme,
     author="Mateusz Filipowicz",
     author_email="mateusz.filipowicz@roche.com",
     license="Apache-2.0",
     url="https://github.com/Roche/gitlab-configuration-as-code",
-    keywords=['gitlab', 'configuration-as-code'],
+    keywords=["gitlab", "configuration-as-code"],
     packages=find_packages(),
     install_requires=requirements,
     tests_require=test_requirements,

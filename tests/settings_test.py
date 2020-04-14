@@ -20,7 +20,9 @@ def test_settings_not_updated_because_unchanged(settings_valid):
     settings.help_page_text = settings_valid["help_page"]["text"]
     settings.help_page_support_url = settings_valid["help_page"]["support_url"]
     settings.polling_interval_multiplier = settings_valid["polling_interval_multiplier"]
-    settings.throttle_unauthenticated_enabled = settings_valid["throttle"]["unauthenticated"]["enabled"]
+    settings.throttle_unauthenticated_enabled = settings_valid["throttle"][
+        "unauthenticated"
+    ]["enabled"]
     settings.allowed_domains = settings_valid["allowed_domains"]
     gitlab.settings.get.return_value = settings
     configurer = SettingsConfigurer(gitlab, settings_valid)

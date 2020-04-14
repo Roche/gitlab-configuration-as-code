@@ -12,11 +12,16 @@ YamlIncluderConstructor.add_to_loader_class(
 )
 
 # includer relative to GitLab configuration file path
-config_path = uos.get_env_or_else(["GITLAB_CONFIG_FILE", "GITLAB_CONFIG_PATH"], "{0}/x".format(os.getcwd())).split('/')
+config_path = uos.get_env_or_else(
+    ["GITLAB_CONFIG_FILE", "GITLAB_CONFIG_PATH"], "{0}/x".format(os.getcwd())
+).split("/")
 del config_path[-1]
-YamlIncluderConstructor.add_to_loader_class(loader_class=yaml.FullLoader, base_dir='/'.join(config_path))
+YamlIncluderConstructor.add_to_loader_class(
+    loader_class=yaml.FullLoader, base_dir="/".join(config_path)
+)
 
 YamlEnvConstructor.add_to_loader_class(loader_class=yaml.FullLoader)
+
 
 class GitlabConfiguration(object):
     def __init__(self, config):

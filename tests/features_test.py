@@ -8,22 +8,22 @@ from .helpers import read_yaml
 
 @pytest.fixture()
 def features_valid():
-    return read_yaml('features_valid.yml')['features']
+    return read_yaml("features_valid.yml")["features"]
 
 
 @pytest.fixture()
 def features_invalid():
-    return read_yaml('features_invalid.yml')['features']
+    return read_yaml("features_invalid.yml")["features"]
 
 
 @pytest.fixture()
 def features_valid_canary():
-    return read_yaml('features_valid_canary.yml')['features']
+    return read_yaml("features_valid_canary.yml")["features"]
 
 
 @pytest.fixture()
 def features_valid_canaries():
-    return read_yaml('features_valid_canaries.yml')['features']
+    return read_yaml("features_valid_canaries.yml")["features"]
 
 
 def __mock_gitlab(features=[]):
@@ -53,8 +53,8 @@ def test_features_configuration_invalid(features_invalid):
     # then
     assert result.has_errors()
     assert result.errors.__len__() == 2
-    assert result.has_error('name')
-    assert result.has_error('value')
+    assert result.has_error("name")
+    assert result.has_error("value")
 
 
 def test_existing_features_removed_before_applying():
@@ -88,20 +88,13 @@ def test_canaries_configured_when_in_config(features_valid_canary):
     configurer.configure()
 
     # then
-    gitlab.features.set.assert_any_call(name,
-                                        value,
-                                        feature_group=None,
-                                        user=user)
+    gitlab.features.set.assert_any_call(name, value, feature_group=None, user=user)
 
-    gitlab.features.set.assert_any_call(name,
-                                        value,
-                                        feature_group=None,
-                                        group=group)
+    gitlab.features.set.assert_any_call(name, value, feature_group=None, group=group)
 
-    gitlab.features.set.assert_any_call(name,
-                                        value,
-                                        feature_group=None,
-                                        project=project)
+    gitlab.features.set.assert_any_call(
+        name, value, feature_group=None, project=project
+    )
 
 
 def test_multiple_canaries_are_configured(features_valid_canaries):
@@ -116,8 +109,10 @@ def test_multiple_canaries_are_configured(features_valid_canaries):
     assert gitlab.features.set.call_count == 4
 
 
-@mark.parametrize('mode', [Mode.TEST, Mode.TEST_SKIP_VALIDATION])
-def test_configuration_not_applied_when_in_mode_other_than_not_apply(features_valid, mode):
+@mark.parametrize("mode", [Mode.TEST, Mode.TEST_SKIP_VALIDATION])
+def test_configuration_not_applied_when_in_mode_other_than_not_apply(
+    features_valid, mode
+):
     # given
     gitlab = __mock_gitlab()
     configurer = FeaturesConfigurer(gitlab, features_valid, mode)
