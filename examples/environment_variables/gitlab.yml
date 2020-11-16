@@ -9,8 +9,13 @@ settings:
     - !env REPO_STORAGE_2
     - /some/defined/repo/path
   plantuml:
-    enabled: True
+    enabled: true
     url: 'http://plantuml.url'
+
+instance_variables:
+  MY_VARIABLE:
+    value: !env MY_VAR
+    protected: true
 
 license:
   starts_at: 2019-11-17
