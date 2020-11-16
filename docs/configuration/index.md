@@ -3,6 +3,7 @@
 * [Appearance](../appearance.md)
 * [Application Settings](../application_settings.md)
 * [Feature Flags](../features.md)
+* [Instance Variables](../instance_variables.md)
 * [License](../license.md)
 
 GitLab configuration is defined in a [YAML](https://docs.ansible.com/ansible/latest/reference_appendices/YAMLSyntax.html).
@@ -32,6 +33,13 @@ features:
       - mygroup2/myproject
     users:
       - myuser
+
+instance_variables:
+  MY_VARIABLE: 'value of my instance variable'
+  ANOTHER_VARIABLE:
+    value: !env SOME_PASSWORD
+    masked: true
+    protected: false
 
 license:
   starts_at: 2019-11-17
