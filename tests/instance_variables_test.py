@@ -2,13 +2,19 @@ from unittest.mock import Mock
 
 import pytest
 
-from gcasc import InstanceVariablesConfigurer
+from gcasc import InstanceVariablesConfigurer, Mode, ValidationException
+
 from .helpers import read_yaml
 
 
 @pytest.fixture()
 def variables_valid():
     return read_yaml("instance_variables_valid.yml")["instance_variables"]
+
+
+@pytest.fixture()
+def variables_invalid():
+    return read_yaml("instance_variables_invalid.yml")["instance_variables"]
 
 
 def test_variables_unchanged(variables_valid):
@@ -74,4 +80,26 @@ def test_variables_changed(variables_valid):
     var1.save.assert_called_once()
     var2.save.assert_called_once()
     not_exist.delete.assert_called_once()
-    gitlab.variables.create.assert_called_once_with({**variables_valid["var3"], "key": "var3"})
+    gitlab.variables.create.assert_called_once_with(
+        {**variables_valid["var3"], "key": "var3"}
+    )
+
+
+def test_variables_invalid(variables_invalid):
+    # given
+    configurer = InstanceVariablesConfigurer(
+        Mock(), variables_invalid, Mode.TEST_SKIP_VALIDATION
+    )
+
+    # when
+    with pytest.raises(ValidationException) as error:
+        configurer.validate()
+
+    # then
+    result = error.value.result
+    assert len(result.get()) == 5
+    assert result.has_error(message="pattern", path="inv@lid")
+    assert result.has_error(message="not of type", path="var1")
+    assert result.has_error(message="value", path="var2")
+    assert result.has_error(message="8 chars", path=["var3", "value"])
+    assert result.has_error(message="not one of", path=["var4", "variable_type"])

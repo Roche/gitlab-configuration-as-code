@@ -1,0 +1,11 @@
+instance_variables:
+  inv@lid: n@me
+  var1:
+  var2:
+    protected: true
+  var3:
+    value: val
+    masked: true
+  var4:
+    value: val
+    variable_type: some_type

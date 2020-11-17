@@ -3,16 +3,23 @@ from pathlib import Path
 
 import gitlab
 import requests
+from gitlab import GitlabError
 
+import gcasc.exceptions as exceptions
 import gcasc.utils.os as uos
-from .utils import logger as logging
+import gcasc.utils.yaml_config
+from gcasc.exceptions import (ClientInitializationException, GcascException,
+                              ValidationException)
 
-from .base import Mode
 from .appearance import AppearanceConfigurer
-from .license import LicenseConfigurer
-from .features import FeaturesConfigurer
-from .settings import SettingsConfigurer
+from .base import Mode
 from .config import GitlabConfiguration
+from .features import FeaturesConfigurer
+from .instance_variables import InstanceVariablesConfigurer
+from .license import LicenseConfigurer
+from .settings import SettingsConfigurer
+from .utils import logger as logging
+from .utils.validators import ValidationResult
 
 GITLAB_CLIENT_CONFIG_FILE = ["GITLAB_CLIENT_CONFIG", "GITLAB_CLIENT_CONFIG_FILE"]
 GITLAB_CLIENT_CERTIFICATE = ["GITLAB_CLIENT_CERT", "GITLAB_CLIENT_CERTIFICATE"]
@@ -39,6 +46,7 @@ configurers = [
     LicenseConfigurer,
     AppearanceConfigurer,
     FeaturesConfigurer,
+    InstanceVariablesConfigurer,
 ]
 
 
@@ -71,13 +79,23 @@ class GitlabConfigurationAsCode(object):
     def configure(self, target=None):
         if target is None:
             for configurer in self.configurers:
-                if configurer.config is None:
-                    logger.info(
-                        "Skipping configurer %s because it does not have any configuration to apply",
-                        configurer.__class__.__name__,
-                    )
-                    continue
-                configurer.configure()
+                try:
+                    self._configure(configurer)
+                except GcascException as exc:
+                    exceptions.handle_gcasc_exception(exc, logger)
+                except GitlabError as exc:
+                    exceptions.handle_gitlab_exception(exc, configurer.logger)
+
+    def _configure(self, configurer):
+        if configurer.config is not None:
+            if self.mode != Mode.TEST_SKIP_VALIDATION:
+                configurer.validate()
+            configurer.configure()
+        else:
+            logger.debug(
+                "Skipping configurer %s because it does not have any configuration to apply",
+                configurer.__class__.__name__,
+            )
 
 
 def init_gitlab():
@@ -93,7 +111,7 @@ def init_gitlab():
         GITLAB_CLIENT_TOKEN
     )
     if token is None:
-        raise ClientInitializationError(
+        raise ClientInitializationException(
             "GitLab token was not provided. It must be defined in {0} environment variable or config file".format(
                 GITLAB_CLIENT_TOKEN
             )
@@ -124,7 +142,7 @@ def init_gitlab_client():
     client = init_gitlab()
 
     if client is None:
-        raise ClientInitializationError(
+        raise ClientInitializationException(
             "Unable to initialize GitLab client due to missing configuration either in "
             "config file or environment vars"
         )
@@ -188,13 +206,9 @@ def __init_session(gitlab):
             certificate, "Client Certificate"
         ) and __check_file_exists(key, "Client Key")
         if not check_config:
-            raise ClientInitializationError(
+            raise ClientInitializationException(
                 "GitLab client authentication env vars were provided, but point to incorrect file(s)"
             )
         session = requests.Session()
         session.cert = (certificate, key)
         gitlab.session = session
-
-
-class ClientInitializationError(Exception):
-    pass
