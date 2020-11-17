@@ -1,7 +1,14 @@
-from gitlab import (GitlabAuthenticationError, GitlabCreateError,
-                    GitlabDeleteError, GitlabError, GitlabGetError,
-                    GitlabLicenseError, GitlabListError, GitlabSetError,
-                    GitlabUpdateError)
+from gitlab import (
+    GitlabAuthenticationError,
+    GitlabCreateError,
+    GitlabDeleteError,
+    GitlabError,
+    GitlabGetError,
+    GitlabLicenseError,
+    GitlabListError,
+    GitlabSetError,
+    GitlabUpdateError,
+)
 
 from gcasc.utils.logger import Logger
 
@@ -29,7 +36,8 @@ class ValidationException(GcascException):
         )
 
 
-_log_exception = lambda ex, logger: logger.error(ex)
+def _log_exception(ex, logger):
+    logger.error(ex)
 
 
 def _handle_validation_exception(

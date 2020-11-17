@@ -7,9 +7,10 @@ from gitlab import GitlabError
 
 import gcasc.exceptions as exceptions
 import gcasc.utils.os as uos
-import gcasc.utils.yaml_config
-from gcasc.exceptions import (ClientInitializationException, GcascException,
-                              ValidationException)
+from gcasc.exceptions import (
+    ClientInitializationException,
+    GcascException,
+)
 
 from .appearance import AppearanceConfigurer
 from .base import Mode
@@ -19,7 +20,6 @@ from .instance_variables import InstanceVariablesConfigurer
 from .license import LicenseConfigurer
 from .settings import SettingsConfigurer
 from .utils import logger as logging
-from .utils.validators import ValidationResult
 
 GITLAB_CLIENT_CONFIG_FILE = ["GITLAB_CLIENT_CONFIG", "GITLAB_CLIENT_CONFIG_FILE"]
 GITLAB_CLIENT_CERTIFICATE = ["GITLAB_CLIENT_CERT", "GITLAB_CLIENT_CERTIFICATE"]

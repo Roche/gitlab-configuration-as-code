@@ -16,7 +16,7 @@ class InstanceVariablesConfigurer(Configurer):
           maxLength: 255
         patternProperties:
           "^.*$":
-            type: 
+            type:
               - object
               - string
               - boolean
@@ -25,7 +25,7 @@ class InstanceVariablesConfigurer(Configurer):
             required:
               - value
             properties:
-              masked: 
+              masked:
                 type: boolean
               protected:
                 type: boolean
