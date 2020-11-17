@@ -9,6 +9,3 @@ class SettingsConfigurer(UpdateOnlyConfigurer):
 
     def _load(self):
         return self.gitlab.settings.get()
-
-    def validate(self):
-        pass
