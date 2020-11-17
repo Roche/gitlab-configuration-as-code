@@ -43,6 +43,7 @@ _GCasC_ offers a functionality to configure:
 * [appearance](https://gitlab-configuration-as-code.readthedocs.io/en/latest/configuration/appearance.html)
 * [application settings](https://gitlab-configuration-as-code.readthedocs.io/en/latest/configuration/application_settings.html)
 * [features](https://gitlab-configuration-as-code.readthedocs.io/en/latest/configuration/features.html)
+* [Instance CI/CD variables](https://gitlab-configuration-as-code.readthedocs.io/en/latest/configuration/instance_variables.html)
 * [license](https://gitlab-configuration-as-code.readthedocs.io/en/latest/configuration/license.html)
 * ... more coming soon!
 
@@ -50,7 +51,7 @@ It gives you also a way to:
 * include external files or other Yamls using `!include` directive
 * inject environment variables into configuration using `!env` directive
 into your Yaml configuration.
- 
+
 Visit [our documentation site](https://gitlab-configuration-as-code.readthedocs.io/) for detailed information on how to use it.
 
 Configuring your GitLab instance is as simple as this:
@@ -69,6 +70,13 @@ settings:
   plantuml:
     enabled: true
     url: 'http://plantuml.url'
+
+instance_variables:
+  anotherVariable: 'another value'
+  MY_VARIABLE:
+    value: !env MY_VARIABLE
+    protected: false
+    masked: true
 
 features:
   - name: sourcegraph
