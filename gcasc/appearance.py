@@ -1,4 +1,4 @@
-from .base import UpdateOnlyConfigurer, Mode
+from .base import Mode, UpdateOnlyConfigurer
 
 
 class AppearanceConfigurer(UpdateOnlyConfigurer):
