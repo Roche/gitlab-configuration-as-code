@@ -3,7 +3,7 @@
 * [Appearance](../appearance.md)
 * [Application Settings](../application_settings.md)
 * [Feature Flags](../features.md)
-* [Instance Variables](../instance_variables.md)
+* [Instance CI/CD Variables](../instance_variables.md)
 * [License](../license.md)
 
 GitLab configuration is defined in a [YAML](https://docs.ansible.com/ansible/latest/reference_appendices/YAMLSyntax.html).
