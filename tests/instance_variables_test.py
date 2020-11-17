@@ -2,7 +2,8 @@ from unittest.mock import Mock
 
 import pytest
 
-from gcasc import InstanceVariablesConfigurer, Mode, ValidationException
+from gcasc import InstanceVariablesConfigurer, Mode
+from gcasc.exceptions import ValidationException
 
 from .helpers import read_yaml
 

@@ -21,8 +21,8 @@ validator_type_message_generator = {
     "multipleOf": lambda error: f"is not multiple of of {error.validator_value}",
     "minItems": lambda error: f"does not contain enough elements (minimum {error.validator_value} elements expected)",
     "maxItems": lambda error: f"contains too many elements (maximum {error.validator_value} elements expected)",
-    "uniqueItems": lambda error: f"has non-unique elements",
-    "additionalProperties": lambda error: f"contains unexpected properties",
+    "uniqueItems": lambda error: "has non-unique elements",
+    "additionalProperties": lambda error: "contains unexpected properties",
     "const": rewrite_error_message,
 }
 

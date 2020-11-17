@@ -2,7 +2,8 @@ from unittest.mock import Mock
 
 import pytest
 
-from gcasc import LicenseConfigurer, Mode, ValidationException
+from gcasc import LicenseConfigurer, Mode
+from gcasc.exceptions import ValidationException
 
 from .helpers import not_raises, read_yaml
 
