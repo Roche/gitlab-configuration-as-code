@@ -3,7 +3,8 @@ import os
 import pytest
 from mock import Mock, patch
 
-from gcasc import ClientInitializationError, GitlabConfigurationAsCode, Mode
+from gcasc import (ClientInitializationException, GitlabConfigurationAsCode,
+                   Mode)
 from tests import helpers
 
 GITLAB_CLIENT_CONFIG_FILE = ["GITLAB_CLIENT_CONFIG", "GITLAB_CLIENT_CONFIG_FILE"]
@@ -136,7 +137,7 @@ def test_session_initialized_when_config_provided():
 
 
 def test_error_raised_when_unable_to_create_gitlab_client():
-    with pytest.raises(ClientInitializationError) as error:
+    with pytest.raises(ClientInitializationException) as error:
         GitlabConfigurationAsCode()
 
         assert "config file" in error

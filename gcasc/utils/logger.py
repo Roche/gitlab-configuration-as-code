@@ -19,6 +19,9 @@ class Logger(object):
     def __init__(self, name):
         self.logger = logging.getLogger(name)
 
+    def is_debug_enabled(self):
+        return self.logger.isEnabledFor(logging.DEBUG)
+
     def log_update(self, field, old_value, new_value, masked=False):
         self.debug(
             "Changed value of %s from %s to %s",
@@ -26,7 +29,6 @@ class Logger(object):
             _apply_masking(old_value, masked),
             _apply_masking(new_value, masked),
         )
-        pass
 
     def log_create(self, value, field=None, masked=False):
         value_to_log = _apply_masking(value, masked)
@@ -34,11 +36,9 @@ class Logger(object):
             self.debug("Created new object: %s", value_to_log)
         else:
             self.debug("Created new field %s with value %s", field, value_to_log)
-        pass
 
     def log_delete(self, field):
         self.debug("Deleted field or object: %s", field)
-        pass
 
     def debug(self, message, *args):
         self.logger.debug(message, *args)

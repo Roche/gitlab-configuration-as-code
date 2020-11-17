@@ -1,15 +1,41 @@
 import datetime
 
+from .base import Configurer, Mode
 from .utils import logger
-import gcasc.utils.validators as validators
-
-from .base import Configurer, Mode, ValidationResult
 
 logger = logger.get_logger("License")
 
 
 class LicenseConfigurer(Configurer):
     _NAME = "license"
+    _SCHEMA = """
+        type: object
+        required:
+          - starts_at
+          - expires_at
+          - plan
+          - user_limit
+          - data
+        properties:
+          starts_at:
+            type: string
+            format: date
+          expires_at:
+            type: string
+            format: date
+          plan:
+            type: string
+            enum:
+              - starter
+              - premium
+              - ultimate
+          user_limit:
+            type: number
+            minimum: 1
+          data:
+            type: string
+        additionalProperties: false
+    """
 
     def __init__(
         self, gitlab, license, mode=Mode.APPLY
@@ -18,17 +44,20 @@ class LicenseConfigurer(Configurer):
 
     def configure(self):
         logger.info("Configuring GitLab licenses")
-        license = self.gitlab.get_license()
-        if not self.__check_if_same_license(license) and self.mode == Mode.APPLY:
-            license = self._update_license()
+        current_license = self.gitlab.get_license()
+        if (
+            not self.__check_if_same_license(current_license)
+            and self.mode == Mode.APPLY
+        ):
+            current_license = self._update_license()
         logger.info(
             "Current license:\nplan: %s\nstarts_at: %s\nexpires_at: %s\nuser_limit: %s",
-            self.__get_plan(license),
-            self.__get_starts_at(license),
-            self.__get_expires_at(license),
-            self.__get_user_limit(license),
+            self.__get_plan(current_license),
+            self.__get_starts_at(current_license),
+            self.__get_expires_at(current_license),
+            self.__get_user_limit(current_license),
         )
-        return license
+        return current_license
 
     def __get(self, field, license=None):  # type: (str, dict) -> str
         license_config = license if license is not None else self.config
@@ -64,32 +93,3 @@ class LicenseConfigurer(Configurer):
     def _update_license(self):
         logger.info("Updating GitLab license...")
         return self.gitlab.set_license(self.__get_data())
-
-    def validate(self):  # type: () -> ValidationResult
-        errors = ValidationResult()
-        if not self.__get_starts_at():
-            errors.add("License must have starts_at property set in format yyyy-MM-dd")
-        elif not validators.validate_date(self.__get_starts_at(), "%Y-%m-%d"):
-            errors.add(
-                "starts_at license property must follow format yyyy-MM-dd, e.g. 2019-03-28"
-            )
-        if not self.__get_expires_at():
-            errors.add("License must have expires_at property set in format yyyy-MM-dd")
-        elif not validators.validate_date(self.__get_expires_at(), "%Y-%m-%d"):
-            errors.add(
-                "expires_at license property must follow format yyyy-MM-dd, e.g. 2019-03-28"
-            )
-        if not self.__get_plan():
-            errors.add("License must have plan property set")
-        elif not self.__get_plan() in ["starter", "premium", "ultimate"]:
-            errors.add(
-                "License plan property was '{0}', but should be one of: starter, premium or ultimate",
-                self.__get_plan(),
-            )
-        if not self.__get_user_limit():
-            errors.add("License must have user_limit property set in format")
-        if not self.__get_data():
-            errors.add(
-                "License must have data property configured containing license itself"
-            )
-        return errors

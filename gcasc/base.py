@@ -1,8 +1,16 @@
+import collections
 from abc import ABC
 from enum import Enum
 
+import jsonschema
+import yaml
 from gitlab import Gitlab
-from .utils import logger
+from jsonschema import draft7_format_checker
+
+from . import GcascException
+from .exceptions import ValidationException
+from .utils import logger as logging
+from .utils.validators import ValidationResult, create_message
 
 
 class Mode(Enum):
@@ -13,46 +21,74 @@ class Mode(Enum):
 
 class Configurer(ABC):
     _NAME = None
+    _SCHEMA = None
 
     def __init__(
         self, gitlab, config, mode=Mode.APPLY
     ):  # type: (Gitlab, dict, Mode)->any
 
         if not self._NAME:
-            raise RuntimeError(
+            raise GcascException(
                 "Class property _NAME must be defined! It will be expected "
                 "to exist in configuration file as a key"
             )
-
+        self.logger = logging.get_logger(self._NAME)
         self.gitlab = gitlab
         self.config = config
         self.mode = mode
-        if self.mode != Mode.TEST_SKIP_VALIDATION:
-            self._validate()
 
     def configure(self):
         pass
 
-    def validate(self):  # type: () -> ValidationResult
+    def _validate(self, result):  # type: (ValidationResult) -> ()
         pass
 
     def _get(self, property):
         return self.config.get(property)
 
-    def _validate(self):
+    def __apply_schema_error(self, err, result):
+        message = create_message(err)
+        path = list(collections.deque(err.absolute_path))
+        if len(path) == 0:
+            # assume that for empty path this is objet property, thus value needs to be included in path
+            path.append(err.instance)
+        result.add(message, path=path)
+
+    def __validate_schema(self, result):  # type: (ValidationResult) -> ()
+        self.logger.debug("Validating configuration schema")
+        schema = yaml.safe_load(self._SCHEMA)
+        validator = jsonschema.Draft7Validator(
+            schema, format_checker=draft7_format_checker
+        )
+        for err in sorted(
+            validator.iter_errors(self.config), key=lambda error: error.absolute_path
+        ):
+            if err.validator in ["allOf", "anyOf", "oneOf", "patternProperties"]:
+                [self.__apply_schema_error(ctx_err, result) for ctx_err in err.context]
+            else:
+                self.__apply_schema_error(err, result)
+
+    def validate(self):
+        self.logger.debug("Validating provided configuration")
         if self.gitlab is None:
-            raise RuntimeError("GitLab client is not provided")
+            raise GcascException("GitLab client is not initialized")
         if self.config is not None:
-            result = self.validate()
+            result = ValidationResult(self._NAME)
+            if self._SCHEMA is not None and len(self._SCHEMA) > 0:
+                self.__validate_schema(result)
+            self._validate(result)
             if result and result.has_errors():
-                error = ValidationError.from_validation_result(result)
+                if self.logger.is_debug_enabled():
+                    self.logger.debug("Validation errors found:")
+                    result.iterate(lambda message: self.logger.debug(message))
+                error = ValidationException.from_validation_result(result)
                 raise error
 
 
 class UpdateOnlyConfigurer(Configurer):
     def __init__(self, name, gitlab, config, mode=Mode.APPLY):
         self.name = name
-        self.logger = logger.get_logger(name)
+        self.logger = logging.get_logger(name)
         super().__init__(gitlab, config, mode=mode)
 
     def _save(self, data):
@@ -63,11 +99,12 @@ class UpdateOnlyConfigurer(Configurer):
 
     def configure(self):
         self.logger.info("Configuring %s", self.name)
+        self.logger.debug("Loading data")
         data = self._load()
+        self.logger.debug("Data loaded. Updating setttings...")
         changes = self._update_setting(data, self.config)
         self.logger.info("Found %s changed values", changes)
         if changes != 0:
-
             self.logger.info("Applying changes...")
             if self.mode == Mode.APPLY:
                 self._save(data)
@@ -109,38 +146,3 @@ class UpdateOnlyConfigurer(Configurer):
                     "Invalid configuration option: %s. Skipping...", prefixed_key
                 )
         return changes
-
-
-class ValidationResult(object):
-    def __init__(self, errors=None):
-        self.errors = [] if errors is None else errors
-
-    def add(self, error, *args):  # type: (str, *str) -> ()
-        message = error.format(*args) if args else error
-        self.errors.append(message)
-
-    def get(self):
-        return self.errors
-
-    def get_as_string(self):
-        return "\n".join(self.errors)
-
-    def has_errors(self):
-        return self.errors.__len__() > 0
-
-    def has_error(self, error):
-        for e in self.errors:
-            if error in e:
-                return True
-        return False
-
-
-class ValidationError(RuntimeError):
-    @staticmethod
-    def from_validation_result(validation_result):
-        if validation_result is None:
-            return ValidationError("Validation failed, but no errors provided")
-        errors = validation_result.get_as_string()
-        return ValidationError(
-            "Configuration validation failed with errors:\n{0}".format(errors)
-        )

@@ -1,9 +1,12 @@
+from unittest.mock import MagicMock, Mock
+
 import pytest
 from pytest import mark
-from unittest.mock import Mock, MagicMock
-from gcasc import FeaturesConfigurer
-from gcasc import Mode
-from .helpers import read_yaml
+
+from gcasc import FeaturesConfigurer, Mode
+from gcasc.exceptions import ValidationException
+
+from .helpers import not_raises, read_yaml
 
 
 @pytest.fixture()
@@ -37,10 +40,8 @@ def test_features_configuration_valid(features_valid):
     configurer = FeaturesConfigurer(Mock(), features_valid, Mode.TEST_SKIP_VALIDATION)
 
     # when
-    result = configurer.validate()
-
-    # then
-    assert not result.has_errors()
+    with (not_raises(ValidationException)):
+        configurer.validate()
 
 
 def test_features_configuration_invalid(features_invalid):
@@ -48,13 +49,14 @@ def test_features_configuration_invalid(features_invalid):
     configurer = FeaturesConfigurer(Mock(), features_invalid, Mode.TEST_SKIP_VALIDATION)
 
     # when
-    result = configurer.validate()
+    with pytest.raises(ValidationException) as error:
+        configurer.validate()
 
     # then
-    assert result.has_errors()
-    assert result.errors.__len__() == 2
-    assert result.has_error("name")
-    assert result.has_error("value")
+    result = error.value.result
+    assert len(result.get()) == 2
+    assert result.has_error(message="name", path=0)
+    assert result.has_error(message="value", path=0)
 
 
 def test_existing_features_removed_before_applying():
