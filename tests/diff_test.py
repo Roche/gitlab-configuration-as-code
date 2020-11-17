@@ -2,12 +2,10 @@ import pytest
 
 from gcasc.utils import diff
 
-
 KEY = "key"
 
 
-class Test:
-
+class MyObject:
     def __init__(self, key, value):
         self.key = key
         self.value = value
@@ -36,17 +34,20 @@ def test_diff_created():
     assert result.create[0] == list1[0]
 
 
-@pytest.mark.parametrize("value", [
-    ("b", "c"),  # string
-    (1, 2),  # int
-    (1.1, 2.2),  # float
-    (True, False),  # bool
-    ([1, 1], [1, 2]),  # list(number)
-    (["a", "a"], ["a", "a", "c"]),  # list(string)
-    (("a", 1), ("b", 1)),  # tuple
-    ({"x": "y"}, {"x": "z"}),  # dict
-    ({"x": {"y": 1}}, {"x": {"y": 2}})  # nested dict
-])
+@pytest.mark.parametrize(
+    "value",
+    [
+        ("b", "c"),  # string
+        (1, 2),  # int
+        (1.1, 2.2),  # float
+        (True, False),  # bool
+        ([1, 1], [1, 2]),  # list(number)
+        (["a", "a"], ["a", "a", "c"]),  # list(string)
+        (("a", 1), ("b", 1)),  # tuple
+        ({"x": "y"}, {"x": "z"}),  # dict
+        ({"x": {"y": 1}}, {"x": {"y": 2}}),  # nested dict
+    ],
+)
 def test_diff_updated_primitive(value):
     # given
     list1 = _create_list("a", value[0])
@@ -86,11 +87,14 @@ def test_diff_unchanged():
     assert result.unchanged[0] == (list1[0])
 
 
-@pytest.mark.parametrize("list2", [
-    _create_list("a", "a", {"save": (lambda x: x)}),
-    [Test("a", "a")],
-    _create_list("a", "a", {"save": Test("a", "a")}),
-])
+@pytest.mark.parametrize(
+    "list2",
+    [
+        _create_list("a", "a", {"save": (lambda x: x)}),
+        [MyObject("a", "a")],
+        _create_list("a", "a", {"save": MyObject("a", "a")}),
+    ],
+)
 def test_diff_discards_complex_values(list2):
     # given
     list1 = _create_list("a", "a")

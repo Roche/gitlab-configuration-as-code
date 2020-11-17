@@ -1,15 +1,47 @@
-from .utils import logger
-from .utils import diff
-from .utils import objects
 import re
 
-from .base import Configurer, Mode, ValidationResult
+from .base import Configurer, Mode
+from .utils import diff, logger, objects
+from .utils.validators import ValidationResult
 
 logger = logger.get_logger("instance_variables")
 
 
 class InstanceVariablesConfigurer(Configurer):
     _NAME = "instance_variables"
+    _SCHEMA = """
+        type: object
+        propertyNames:
+          pattern: "^[a-zA-Z0-9_]*$"
+          maxLength: 255
+        patternProperties:
+          "^.*$":
+            type: 
+              - object
+              - string
+              - boolean
+              - integer
+            maxLength: 10000
+            required:
+              - value
+            properties:
+              masked: 
+                type: boolean
+              protected:
+                type: boolean
+              value:
+                maxLength: 10000
+                type:
+                  - string
+                  - boolean
+                  - integer
+              variable_type:
+                type: string
+                enum:
+                  - file
+                  - env_var
+            additionalProperties: false
+    """
 
     def __init__(
         self, gitlab, instance_variables, mode=Mode.APPLY
@@ -22,7 +54,7 @@ class InstanceVariablesConfigurer(Configurer):
     def configure(self):
         logger.info("Configuring Instance Variables")
         existing_variables = self.gitlab.variables.list()
-        list_conf = [self.__map_variable(k,v) for k, v in self.config.items()]
+        list_conf = [self.__map_variable(k, v) for k, v in self.config.items()]
         result = diff.diff_list(list_conf, existing_variables, "key")
         if result.has_changes():
             self._remove(result.remove)
@@ -50,33 +82,23 @@ class InstanceVariablesConfigurer(Configurer):
             if self.mode == Mode.APPLY:
                 self.gitlab.variables.create(var)
 
-    def validate(self):  # type: () -> ValidationResult
-        errors = ValidationResult()
+    def _validate(self, errors):  # type: (ValidationResult) -> ()
         for key, variable in self.config.items():
             is_dict = isinstance(variable, dict)
-            value = variable.get("value") if is_dict else variable
-            value_length = len(value)
-            if not value or value_length == 0:
-                errors.add("instance_variables[{0}] must have value property", key)
-            elif value and value_length > 10000:
-                errors.add("instance_variables[{0}] can have 10,000 characters", key)
             if not is_dict:
                 continue
+            value = variable.get("value") if is_dict else variable
+            if value is None:
+                continue
+            path = [key, "value"]
             if variable.get("masked"):
-                if value_length < 8:
-                    errors.add(
-                        "instance_variables[{0}] must have at least 8 chars to be masked",
-                        key,
-                    )
-
+                if len(value) < 8:
+                    errors.add("must have at least 8 chars to be masked", path=path)
                 if "\n" in value:
-                    errors.add("instance_variables[{0}] must be in a single line", key)
+                    errors.add("must be in a single line to be masked", path=path)
                 if not bool(re.match(r"[a-zA-Z0-9+/=@:]+$", value)):
                     errors.add(
-                        "instance_variables[{0}] must consist only of characters from Base64 alphabet plus '@', ':'",
-                        key,
+                        "must consist only of characters from Base64 alphabet plus '@', ':'",
+                        path=path,
                     )
-            variable_type = variable.get("variable_type")
-            if variable_type and variable_type not in ["env_var", "file"]:
-                errors.add("instance_variables[{0}] variable_type must be 'env_var' or 'file'", key)
         return errors

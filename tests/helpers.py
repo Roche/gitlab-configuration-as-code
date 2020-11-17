@@ -1,5 +1,7 @@
 import os
+from contextlib import contextmanager
 
+import pytest
 import yaml
 
 try:
@@ -36,3 +38,11 @@ def read_yaml(file):
 
 def read_yaml_from_string(str):
     return yaml.load(StringIO(str), Loader=yaml.FullLoader)
+
+
+@contextmanager
+def not_raises(exception):
+    try:
+        yield
+    except exception:
+        raise pytest.fail("DID RAISE {0}".format(exception))
