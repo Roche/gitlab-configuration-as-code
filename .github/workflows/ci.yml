@@ -44,7 +44,7 @@ jobs:
       - name: Install
         run: pip install tox
       - name: Test
-        run: tox
+        run: tox -e py
     
   build:
     runs-on: ubuntu-latest
