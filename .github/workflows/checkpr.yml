@@ -1,0 +1,17 @@
+name: Demo
+on:
+  pull_request:
+    branches:
+      - *
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Log event
+        run: echo ${{ github.event }}
+      - name: Log if PR
+        run: echo "THIS IS PR"
+        if: ${{ github.base_ref }}
+
