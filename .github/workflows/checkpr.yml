@@ -1,0 +1,17 @@
+name: Demo
+on: [push, pull_request]
+
+jobs:
+  test:
+    name: Test
+    runs-on: ubuntu-latest
+    steps:
+      - name: Log event
+        run: echo ${{ github.event.action }}
+      - name: Log if PR for ref
+        run: echo "THIS IS PR"
+        if: ${{ github.base_ref }}
+      - name: Log if PR for event
+        run: echo "THIS IS PR"
+        if: ${{ github.event.pull_request }}
+
