@@ -82,7 +82,7 @@ jobs:
       with:
         push: false
         tags: |
-          $IMAGE_NAME:latest
+          hoffmannlaroche/gcasc:latest
         labels: |
           project: $LIB_NAME
           license: "Apache License 2.0"
