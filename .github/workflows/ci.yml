@@ -73,19 +73,23 @@ jobs:
 #       with:
 #         username: ${{ secrets.DOCKERHUB_USERNAME }}
 #         password: ${{ secrets.DOCKERHUB_TOKEN }}
+    
+    - name: Docker meta
+      id: docker_meta
+      uses: crazy-max/ghaction-docker-meta@v1
+      with:
+        images: hoffmannlaroche/gcasc
+        tag-semver: |
+            {{version}}
+            {{major}}.{{minor}}
+            {{major}}.{{minor}}.{{patch}}
     - name: Build and push
       id: docker_build
       uses: docker/build-push-action@v2
-      env:
-        IMAGE_NAME: hoffmannlaroche/gcasc
-        LIB_NAME: 'GitLab Configuration as Code'
       with:
         push: false
-        tags: |
-          hoffmannlaroche/gcasc:latest
-        labels: |
-          project: $LIB_NAME
-          license: "Apache License 2.0"
+        tags: ${{ steps.docker_meta.outputs.tags }}
+        labels: ${{ steps.docker_meta.outputs.labels }}
 #     - name: Build Docker image
 #       uses: docker/build-push-action@v2
 #       with:
