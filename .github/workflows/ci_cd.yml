@@ -9,6 +9,19 @@ jobs:
       - uses: rokroskar/workflow-run-cleanup-action@master
         env:
           GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+        
+  contributors:
+    name: Add Conributors
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Contribute List
+        uses: akhilmhdh/contributors-readme-action@v2.0.2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          commit_message: 'docs(readme): update contributors'
+          commiter_username: 'Contribution Bot'
   lint:
     runs-on: ubuntu-latest
     name: Lint
