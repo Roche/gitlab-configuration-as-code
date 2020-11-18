@@ -50,6 +50,7 @@ jobs:
           python-version: ${{ matrix.python-version }}
       - name: Install Tox
         run: pip install tox
+      - run: env
       - name: Run tests
         run: tox -e py
       - name: Publish Test Report
