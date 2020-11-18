@@ -50,6 +50,14 @@ configurers = [
 ]
 
 
+def try_it():
+  if 'a' == 'b':
+     return 0
+  elif 1 == 1:
+     return 1
+  return 2
+
+
 def create_all_configurers(gitlab, config, mode):
     return map(
         lambda configurer: configurer(gitlab, config.get(configurer._NAME), mode),
@@ -73,6 +81,7 @@ class GitlabConfigurationAsCode(object):
             if configurers
             else create_all_configurers(self.gitlab, self.config, self.mode)
         )
+        print(try_it())
         version, revision = self.gitlab.version()
         logger.info("GitLab version: %s, revision: %s", version, revision)
 
