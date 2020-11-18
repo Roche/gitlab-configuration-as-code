@@ -4,13 +4,13 @@ on:
     branches:
       - master
     tags:
-      - *
+      - '*'
     paths-ignore:
       - 'docs/**'
       - 'examples/**'
   pull_request:
     branches:
-      - *
+      - '*'
 
 jobs:
   cleanup-runs:
