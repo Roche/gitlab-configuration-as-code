@@ -1,4 +1,4 @@
-![CI/CD](https://github.com/filipowm/gitlab-configuration-as-code/workflows/CI/CD/badge.svg)
+![CI/CD](https://github.com/Roche/gitlab-configuration-as-code/workflows/CI/CD/badge.svg)
 [![Docker Pull count](https://img.shields.io/docker/pulls/hoffmannlaroche/gcasc)](https://hub.docker.com/r/hoffmannlaroche/gcasc)
 [![PyPI](https://img.shields.io/pypi/v/gitlab-configuration-as-code)](https://pypi.org/project/gitlab-configuration-as-code)
 [![Documentation Status](https://readthedocs.org/projects/gitlab-configuration-as-code/badge/?version=latest)](https://gitlab-configuration-as-code.readthedocs.io/en/latest/?badge=latest)
