@@ -15,8 +15,14 @@ help:
 	@echo "        Check style with flake8."
 	@echo "   test"
 	@echo "        Run tests and produce report in test/out_report.xml"
+	@echo "   build"
+	@echo '        Build `gcasc` Python package.'
+	@echo "   publish"
+	@echo '        Publish `gcasc` Python package.'
 	@echo "   docker-build"
-	@echo '        Build the `gcasc` Docker image.'
+	@echo '        Build `gcasc` Docker image.'
+	@echo "   docker-push"
+	@echo '        Publish `gcasc` Docker image.'
 
 clean-pyc:
 	find . -name '*.pyc' -exec rm -f {} +
@@ -63,16 +69,18 @@ build: clean-build docs
 	python3 setup.py sdist bdist_wheel
 
 publish: build
-ifeq ($(strip $(PYPI_USERNAME)),)
-	@echo "PYPI_USERNAME variable must be provided"
+ifeq ($(strip $(TWINE_USERNAME)),)
+	@echo "TWINE_USERNAME variable must be provided"
 	exit -1
 endif
-ifeq ($(strip $(PYPI_PASSWORD)),)
-	@echo "PYPI_PASSWORD variable must be provided"
+ifeq ($(strip $(TWINE_PASSWORD)),)
+	@echo "TWINE_PASSWORD variable must be provided"
 	exit -1
 endif
+	@echo "Publishing library to PyPi"
 	pip3 install --user twine
-	twine upload dist/* -u $(PYPI_USERNAME) -p $(PYPI_PASSWORD)
+	twine upload dist/*
+	@echo "Library published"
 
 docker-build:
 	docker build \
