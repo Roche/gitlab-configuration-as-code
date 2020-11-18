@@ -8,7 +8,7 @@
 
 # GitLab Configuration as Code (*GCasC*)
 
-Manage GitLab configuration as code to make it easily manageable, traceable and reproducible.
+Manage GitLab configuration as code to make it easily manageable, traceable and reproducible.x
 
 ### Table of Contents
 
