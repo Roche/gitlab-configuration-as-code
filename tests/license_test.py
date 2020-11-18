@@ -1,9 +1,11 @@
+from unittest.mock import Mock
+
 import pytest
 
-from unittest.mock import Mock
-from gcasc import LicenseConfigurer
-from gcasc import Mode
-from .helpers import read_yaml
+from gcasc import LicenseConfigurer, Mode
+from gcasc.exceptions import ValidationException
+
+from .helpers import not_raises, read_yaml
 
 
 @pytest.fixture()
@@ -21,10 +23,8 @@ def test_license_configuration_valid(license_valid):
     configurer = LicenseConfigurer(Mock(), license_valid, Mode.TEST_SKIP_VALIDATION)
 
     # when
-    result = configurer.validate()
-
-    # then
-    assert not result.has_errors()
+    with (not_raises(ValidationException)):
+        configurer.validate()
 
 
 def test_license_configuration_invalid(license_invalid):
@@ -32,16 +32,17 @@ def test_license_configuration_invalid(license_invalid):
     configurer = LicenseConfigurer(Mock(), license_invalid, Mode.TEST_SKIP_VALIDATION)
 
     # when
-    result = configurer.validate()
+    with pytest.raises(ValidationException) as error:
+        configurer.validate()
 
     # then
-    assert result.has_errors()
-    assert result.errors.__len__() == 5
-    assert result.has_error("starts_at")
-    assert result.has_error("expires_at")
-    assert result.has_error("plan")
-    assert result.has_error("user_limit")
-    assert result.has_error("data")
+    result = error.value.result
+    assert len(result.get()) == 5
+    assert result.has_error_message("user_limit")
+    assert result.has_error_message("data")
+    assert result.has_error_path("expires_at")
+    assert result.has_error_path("plan")
+    assert result.has_error_path("starts_at")
 
 
 def test_license_not_updated_because_same_exists(license_valid):

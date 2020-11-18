@@ -13,6 +13,13 @@ settings:
     enabled: True
     url: 'http://plantuml.url'
 
+instance_variables:
+  MY_VARIABLE:
+    value: 'myvariable@value'
+    protected: false
+    masked: true
+  ANOTHER_VARIABLE: 'another value'
+
 license:
   starts_at: 2019-11-17
   expires_at: 2019-12-17

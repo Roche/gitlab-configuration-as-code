@@ -2,9 +2,9 @@ import os
 
 import yaml
 
+from gcasc import GcascException
 from gcasc.utils import os as uos
 from gcasc.utils.yaml_include import YamlIncluderConstructor
-from gcasc.utils.yaml_env import YamlEnvConstructor
 
 # includer relative to current path from which script is executed
 YamlIncluderConstructor.add_to_loader_class(
@@ -20,17 +20,15 @@ YamlIncluderConstructor.add_to_loader_class(
     loader_class=yaml.FullLoader, base_dir="/".join(config_path)
 )
 
-YamlEnvConstructor.add_to_loader_class(loader_class=yaml.FullLoader)
-
 
 class GitlabConfiguration(object):
     def __init__(self, config):
         # type: (dict)->GitlabConfiguration
         if config is None:
-            raise RuntimeError("GitLab configuration is empty")
+            raise GcascException("GitLab configuration is empty")
 
         if not isinstance(config, dict):
-            raise RuntimeError("Configuration provided must be of dictionary type")
+            raise GcascException("Configuration provided must be of dictionary type")
 
         self.config = config
 

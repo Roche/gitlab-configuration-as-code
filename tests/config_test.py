@@ -1,13 +1,13 @@
 import pytest
 
-from gcasc import GitlabConfiguration
+from gcasc import GcascException, GitlabConfiguration
 
 
 def test_error_raised_when_configuration_none():
-    with pytest.raises(RuntimeError):
+    with pytest.raises(GcascException):
         GitlabConfiguration(None)
 
 
 def test_error_raised_when_configuration_not_a_dict():
-    with pytest.raises(RuntimeError):
+    with pytest.raises(GcascException):
         GitlabConfiguration("str")

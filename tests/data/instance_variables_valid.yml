@@ -1,0 +1,8 @@
+instance_variables:
+  var1: val1
+  var2:
+    value: val2
+    protected: true
+  var3:
+    value: val3val3
+    masked: true

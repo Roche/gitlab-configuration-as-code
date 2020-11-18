@@ -1,12 +1,40 @@
+from .base import Configurer, Mode
 from .utils import logger
-
-from .base import Configurer, Mode, ValidationResult
 
 logger = logger.get_logger("Features")
 
 
 class FeaturesConfigurer(Configurer):
     _NAME = "features"
+    _SCHEMA = """
+        type: array
+        items:
+          - type: object
+            required:
+              - name
+              - value
+            properties:
+              name:
+                type: string
+              value:
+                type:
+                  - string
+                  - boolean
+                  - number
+              projects:
+                type: array
+                items:
+                  type: string
+              users:
+                type: array
+                items:
+                  type: string
+              groups:
+                type: array
+                items:
+                  type: string
+            additionalProperties: false
+    """
 
     def __init__(
         self, gitlab, features, mode=Mode.APPLY
@@ -59,15 +87,3 @@ class FeaturesConfigurer(Configurer):
         if self.mode == Mode.APPLY:
             features = self.gitlab.features.list()
             [feature.delete() for feature in features]
-
-    def validate(self):  # type: () -> ValidationResult
-        errors = ValidationResult()
-        for idx, feature in enumerate(self.config):
-            name = feature.get("name")
-            if not name:
-                errors.add("feature[{0}] must have name property", str(idx))
-            else:
-                name = "{0}.{1}".format(idx, name)
-            if feature.get("value") is None:
-                errors.add("feature[{0}] must have value property", name)
-        return errors
