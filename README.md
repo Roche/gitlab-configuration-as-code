@@ -346,6 +346,11 @@ Everyone is warm welcome to contribute!
 Please make sure to read the [Contributing Guide](CONTRIBUTING.md) and [Code of Conduct](CODE_OF_CONDUCT.md)
 before making a pull request.
 
+### Contributors
+
+<!-- readme: contributors -start -->
+<!-- readme: contributors -end -->
+
 ## License
 
 Project is released under [Apache License, Version 2.0 license](LICENSE).
