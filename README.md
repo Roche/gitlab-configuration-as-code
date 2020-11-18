@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.org/Roche/gitlab-configuration-as-code.svg?branch=master)](https://travis-ci.org/Roche/gitlab-configuration-as-code)
+![CI/CD](https://github.com/filipowm/gitlab-configuration-as-code/workflows/CI/CD/badge.svg)
 [![Docker Pull count](https://img.shields.io/docker/pulls/hoffmannlaroche/gcasc)](https://hub.docker.com/r/hoffmannlaroche/gcasc)
 [![PyPI](https://img.shields.io/pypi/v/gitlab-configuration-as-code)](https://pypi.org/project/gitlab-configuration-as-code)
 [![Documentation Status](https://readthedocs.org/projects/gitlab-configuration-as-code/badge/?version=latest)](https://gitlab-configuration-as-code.readthedocs.io/en/latest/?badge=latest)
@@ -345,6 +345,11 @@ Everyone is warm welcome to contribute!
 
 Please make sure to read the [Contributing Guide](CONTRIBUTING.md) and [Code of Conduct](CODE_OF_CONDUCT.md)
 before making a pull request.
+
+### Contributors
+
+<!-- readme: contributors -start -->
+<!-- readme: contributors -end -->
 
 ## License
 

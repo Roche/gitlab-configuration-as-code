@@ -1,0 +1,52 @@
+name: Release
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - 'VERSION'
+
+jobs:
+  release:
+    name: Release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Read package.json
+        id: version
+        uses: juliangruber/read-file-action@v1
+        with:
+          path: ./VERSION
+      - name: New version
+        run: echo ${{ steps.version.outputs.content }}
+      - name: Update changelog
+        uses: thomaseizinger/keep-a-changelog-new-release@v1
+        with:
+          version: ${{ steps.version.outputs.content }}
+      - name: Commit changes
+        uses: EndBug/add-and-commit@v5
+        with:
+          author_name: Changelog Bot
+          author_email: changelog-bot@github.com
+          message: "docs(changelog): update changelog for version ${{ steps.version.outputs.content }}"
+          add: "CHANGELOG.md"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Get Changelog Entry
+        id: changelog_reader
+        uses: mindsers/changelog-reader-action@v2
+        with:
+          validation_depth: 0
+          version: ${{ steps.version.outputs.content }}
+          path: ./CHANGELOG.md
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ steps.version.outputs.content }}
+          release_name: v${{ steps.version.outputs.content }}
+          body: ${{ steps.changelog_reader.outputs.changes }}
+          prerelease: ${{ steps.changelog_reader.outputs.status == 'prereleased' }}
+          draft: ${{ steps.changelog_reader.outputs.status == 'unreleased' }}
