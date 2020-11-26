@@ -78,7 +78,7 @@ ifeq ($(strip $(TWINE_PASSWORD)),)
 	exit -1
 endif
 	@echo "Publishing library to PyPi"
-	pip3 install --user twine
+	pip3 install twine
 	twine upload dist/*
 	@echo "Library published"
 
