@@ -96,9 +96,9 @@ class InstanceVariablesConfigurer(Configurer):
                     errors.add("must have at least 8 chars to be masked", path=path)
                 if "\n" in value:
                     errors.add("must be in a single line to be masked", path=path)
-                if not bool(re.match(r"[a-zA-Z0-9+/=@:]+$", value)):
+                if not bool(re.match(r"[a-zA-Z0-9+/=@:\-]+$", value)):
                     errors.add(
-                        "must consist only of characters from Base64 alphabet plus '@', ':'",
+                        "must consist only of characters from Base64 alphabet plus '@', ':', '-'",
                         path=path,
                     )
         return errors
