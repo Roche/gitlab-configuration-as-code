@@ -5,6 +5,10 @@ fixes and other changes of GitLab Configuration as Code.
 
 ## [Unreleased]
 
+### Fixed
+
+-   Add hyphen '-' support to Instance CI/CD Variables 
+
 ## [0.6.0] - 2020-11-26
 
 ### Added
