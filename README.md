@@ -353,14 +353,14 @@ before making a pull request.
 <tr>
     <td align="center">
         <a href="https://github.com/filipowm">
-            <img src="https://avatars0.githubusercontent.com/u/20795389?v=4" width="80;" alt="filipowm"/>
+            <img src="https://avatars.githubusercontent.com/u/20795389?v=4" width="80;" alt="filipowm"/>
             <br />
             <sub><b>Mateusz</b></sub>
         </a>
     </td>
     <td align="center">
         <a href="https://github.com/11mariom">
-            <img src="https://avatars2.githubusercontent.com/u/552506?v=4" width="80;" alt="11mariom"/>
+            <img src="https://avatars.githubusercontent.com/u/552506?v=4" width="80;" alt="11mariom"/>
             <br />
             <sub><b>Mariusz Kozakowski</b></sub>
         </a>
