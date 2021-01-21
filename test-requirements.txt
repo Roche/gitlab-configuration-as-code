@@ -1,4 +1,7 @@
 pytest>=5.2.4
 pytest-cov>=2.8.1
-mock>=3.0.5
+
+# pin mock version due to some weird issue
+# https://github.com/Roche/gitlab-configuration-as-code/runs/1736343549?check_suite_focus=true
+mock==4.0.2
 flake8>=3.7.9
