@@ -362,7 +362,7 @@ before making a pull request.
         <a href="https://github.com/kcatro">
             <img src="https://avatars.githubusercontent.com/u/53215294?v=4" width="80;" alt="kcatro"/>
             <br />
-            <sub><b>kcatro</b></sub>
+            <sub><b>Kcatro</b></sub>
         </a>
     </td>
     <td align="center">
