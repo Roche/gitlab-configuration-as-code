@@ -359,6 +359,20 @@ before making a pull request.
         </a>
     </td>
     <td align="center">
+        <a href="https://github.com/kcatro">
+            <img src="https://avatars.githubusercontent.com/u/53215294?v=4" width="80;" alt="kcatro"/>
+            <br />
+            <sub><b>kcatro</b></sub>
+        </a>
+    </td>
+    <td align="center">
+        <a href="https://github.com/randombenj">
+            <img src="https://avatars.githubusercontent.com/u/5184499?v=4" width="80;" alt="randombenj"/>
+            <br />
+            <sub><b>Benj Fassbind</b></sub>
+        </a>
+    </td>
+    <td align="center">
         <a href="https://github.com/11mariom">
             <img src="https://avatars.githubusercontent.com/u/552506?v=4" width="80;" alt="11mariom"/>
             <br />
