@@ -55,6 +55,7 @@ def handle_gcasc_exception(exc, logger):  # type: (GcascException, Logger) -> ()
     switch.get(exc_type, _log_exception)(exc, logger)
     sys.exit(1)
 
+
 def handle_gitlab_exception(exc, logger):  # type: (GitlabError, Logger) -> ()
     switch = {
         GitlabAuthenticationError: "Authentication to GitLab failed",
