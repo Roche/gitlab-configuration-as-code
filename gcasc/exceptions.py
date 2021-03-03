@@ -1,3 +1,5 @@
+import sys
+
 from gitlab import (
     GitlabAuthenticationError,
     GitlabCreateError,
@@ -51,7 +53,7 @@ def handle_gcasc_exception(exc, logger):  # type: (GcascException, Logger) -> ()
     switch = {ValidationException: _handle_validation_exception}
     exc_type = type(exc)
     switch.get(exc_type, _log_exception)(exc, logger)
-
+    sys.exit(1)
 
 def handle_gitlab_exception(exc, logger):  # type: (GitlabError, Logger) -> ()
     switch = {
@@ -67,3 +69,4 @@ def handle_gitlab_exception(exc, logger):  # type: (GitlabError, Logger) -> ()
     exc_type = type(exc)
     message = switch.get(exc_type, "Error occurred while communicating with GitLab")
     logger.error(f"{message}\nHTTP {exc.response_code}, {exc.error_message}")
+    sys.exit(1)
