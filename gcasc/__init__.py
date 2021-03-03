@@ -1,4 +1,5 @@
 import os
+import sys
 from pathlib import Path
 
 import gitlab
@@ -83,8 +84,10 @@ class GitlabConfigurationAsCode(object):
                     self._configure(configurer)
                 except GcascException as exc:
                     exceptions.handle_gcasc_exception(exc, logger)
+                    sys.exit(1)
                 except GitlabError as exc:
                     exceptions.handle_gitlab_exception(exc, configurer.logger)
+                    sys.exit(1)
 
     def _configure(self, configurer):
         if configurer.config is not None:
