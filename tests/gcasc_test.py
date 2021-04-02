@@ -126,14 +126,17 @@ def test_gitlab_config_loaded_from_file():
 
 
 def test_session_initialized_when_config_provided():
+    # given
     certificate = helpers.get_file_path("dummycert.crt")
     key = helpers.get_file_path("dummykey.key")
     os.environ["GITLAB_CLIENT_TOKEN"] = "token"
     os.environ["GITLAB_CLIENT_CERTIFICATE"] = certificate
     os.environ["GITLAB_CLIENT_KEY"] = key
 
+    # when
     gcasc = GitlabConfigurationAsCode()
 
+    # then
     assert gcasc.gitlab.session.cert == (certificate, key)
 
 
@@ -146,10 +149,13 @@ def test_error_raised_when_unable_to_create_gitlab_client():
 
 
 def test_apply_mode_is_used_when_not_provided():
+    # given
     os.environ["GITLAB_CLIENT_TOKEN"] = "token"
 
+    # when
     gcasc = GitlabConfigurationAsCode()
 
+    #then
     assert gcasc.mode == Mode.APPLY
 
 def test_non_zero_return_code_on_error():
