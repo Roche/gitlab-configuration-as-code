@@ -5,6 +5,7 @@ from mock import Mock, patch
 
 from gcasc import (ClientInitializationException, GitlabConfigurationAsCode,
                    Mode)
+from gcasc.exceptions import GcascException
 from tests import helpers
 
 GITLAB_CLIENT_CONFIG_FILE = ["GITLAB_CLIENT_CONFIG", "GITLAB_CLIENT_CONFIG_FILE"]
@@ -150,3 +151,15 @@ def test_apply_mode_is_used_when_not_provided():
     gcasc = GitlabConfigurationAsCode()
 
     assert gcasc.mode == Mode.APPLY
+
+def test_non_zero_return_code_on_error():
+    # given
+    os.environ["GITLAB_CLIENT_TOKEN"] = "token"
+
+    with patch.object(GitlabConfigurationAsCode, '_configure') as gcasc_mock_method:
+        # when
+        gcasc_mock_method.side_effect = GcascException()
+
+        # then
+        with pytest.raises(SystemExit):
+            GitlabConfigurationAsCode().configure()
