@@ -27,7 +27,7 @@ Manage GitLab configuration as code to make it easily manageable, traceable and 
 * [Contribution](#contribution)
 * [License](#license)
 
-## Introduction
+## Introduction :
 
 When configuring your GitLab instance, part of the settings you put in [Omnibus](https://docs.gitlab.com/12.7/omnibus/settings/README.html)
 or [Helm Chart](https://docs.gitlab.com/charts/charts/) configuration, and the rest you configure through GitLab UI
@@ -155,7 +155,7 @@ GITLAB_CLIENT_CONFIG_FILE=<path_to_client_certificate>
 GITLAB_CLIENT_KEY=<path_to_client_key>
 ```
 
-### Prepare GitLab configuration
+### Prepare GitLab configuration:
 
 GitLab configuration must be defined in Yaml file. You can provide a configuration in a single file, or you can
 split it into multiple Yaml files and inject them.
