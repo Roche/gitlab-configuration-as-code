@@ -96,9 +96,11 @@ class InstanceVariablesConfigurer(Configurer):
                     errors.add("must have at least 8 chars to be masked", path=path)
                 if "\n" in value:
                     errors.add("must be in a single line to be masked", path=path)
-                if not bool(re.match(r"[a-zA-Z0-9+/=@:\-]+$", value)):
+                # https://gitlab.com/gitlab-org/gitlab/-/blob/fd3a3a8f75f7bddc7c02dc9cf178986bc008ae60/app/models/concerns/ci/maskable.rb
+                if not bool(re.match(r"\A[a-zA-Z0-9_+=/@:.~\-]+\Z", value)):
                     errors.add(
                         "must consist only of characters from Base64 alphabet plus '@', ':', '-'",
                         path=path,
                     )
+
         return errors
