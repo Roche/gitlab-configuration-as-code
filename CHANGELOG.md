@@ -5,6 +5,10 @@ fixes and other changes of GitLab Configuration as Code.
 
 ## [Unreleased]
 
+### Fixed
+
+- Adjust CI variable validation regex to the one GitLab uses
+
 ## [0.6.2] - 2021-04-09
 
 ## [0.6.1] - 2021-01-22
